@@ -165,12 +165,11 @@ class SampleSettingTab extends PluginSettingTab {
 					});
 			});
 
-		const customColumnWidthSetting = containerEl.createDiv();
-		new Setting(customColumnWidthSetting)
+		new Setting(containerEl)
 			.setName("Custom Width")
 			.setDesc("Set the minimum column width for all columns in pixels.")
 			.addText((text) => {
-				text.setPlaceholder("Enter your secret")
+				text.setPlaceholder("150")
 					.setValue(this.plugin.settings.customColumnWidth.toString())
 					.onChange(async (value) => {
 						this.plugin.settings.customColumnWidth = Number(value);
