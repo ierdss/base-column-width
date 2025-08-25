@@ -14,13 +14,13 @@ import {
 interface BaseColumnWidthSettings {
 	minColumnWidth: number;
 	maxColumnWidth: number;
-	defColumnWidthBehavior: string;
+	defaultColumnWidthBehavior: string;
 }
 
 const DEFAULT_SETTINGS: BaseColumnWidthSettings = {
 	minColumnWidth: 100,
 	maxColumnWidth: 300,
-	defColumnWidthBehavior: "1",
+	defaultColumnWidthBehavior: "1",
 };
 
 export default class BaseColumnWidthPlugin extends Plugin {
@@ -148,20 +148,6 @@ class SampleSettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName("Default Column Width Behavior")
-			.addDropdown((dropdown) =>
-				dropdown
-					.addOption("1", "disabled")
-					.addOption("2", "fit-content")
-					.addOption("3", "custom")
-					.setValue(this.plugin.settings.defColumnWidthBehavior)
-					.onChange(async (value) => {
-						this.plugin.settings.defColumnWidthBehavior = value;
-						await this.plugin.saveSettings();
-					})
-			);
-
-		new Setting(containerEl)
 			.setName("Minimum Column Width")
 			.setDesc("Set the minimum column width for all columns.")
 			.addText((text) =>
@@ -183,6 +169,33 @@ class SampleSettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.maxColumnWidth.toString())
 					.onChange(async (value) => {
 						this.plugin.settings.maxColumnWidth = Number(value);
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Default Column Width Behavior")
+			.addDropdown((dropdown) =>
+				dropdown
+					.addOption("1", "disabled")
+					.addOption("2", "fit-content")
+					.addOption("3", "custom")
+					.setValue(this.plugin.settings.defaultColumnWidthBehavior)
+					.onChange(async (value) => {
+						this.plugin.settings.defaultColumnWidthBehavior = value;
+					})
+			);
+
+		const customWidthSetting = containerEl.createDiv();
+		new Setting(customWidthSetting)
+			.setName("Custom Width")
+			.setDesc("Set the minimum column width for all columns in pixels.")
+			.addText((text) =>
+				text
+					.setPlaceholder("Enter your secret")
+					.setValue(this.plugin.settings.minColumnWidth.toString())
+					.onChange(async (value) => {
+						this.plugin.settings.minColumnWidth = Number(value);
 						await this.plugin.saveSettings();
 					})
 			);
