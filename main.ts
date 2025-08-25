@@ -165,7 +165,8 @@ class SampleSettingTab extends PluginSettingTab {
 					});
 			});
 
-		new Setting(containerEl)
+		const customColumnWidthSetting = containerEl.createDiv();
+		new Setting(customColumnWidthSetting)
 			.setName("Custom Width")
 			.setDesc("Set the minimum column width for all columns in pixels.")
 			.addText((text) => {
