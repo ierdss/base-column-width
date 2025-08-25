@@ -25,6 +25,10 @@ export default class BaseColumnWidthPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
+		this.addRibbonIcon("dice", "Greet", () => {
+			new Notice("Hello, world!");
+		});
+
 		// This creates an icon in the left ribbon.
 		const ribbonIconEl = this.addRibbonIcon(
 			"dice",
