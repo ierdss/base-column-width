@@ -15,7 +15,7 @@ interface BaseColumnWidthSettings {
 	minColumnWidth: number;
 	maxColumnWidth: number;
 	defaultColumnWidthBehavior: string;
-	customColumnWidth?: number;
+	customColumnWidth: number;
 }
 
 const DEFAULT_SETTINGS: BaseColumnWidthSettings = {
@@ -149,39 +149,11 @@ class SampleSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl("h5", { text: "Column Width Limits" });
-
-		new Setting(containerEl)
-			.setName("Minimum Column Width")
-			.setDesc("Set the minimum column width for all columns.")
-			.addText((text) =>
-				text
-					.setPlaceholder("100")
-					.setValue(this.plugin.settings.minColumnWidth.toString())
-					.onChange(async (value) => {
-						this.plugin.settings.minColumnWidth = Number(value);
-						await this.plugin.saveSettings();
-					})
-			);
-
-		new Setting(containerEl)
-			.setName("Maximum Column Width")
-			.setDesc("Set the maximum column width for all columns.")
-			.addText((text) =>
-				text
-					.setPlaceholder("300")
-					.setValue(this.plugin.settings.maxColumnWidth.toString())
-					.onChange(async (value) => {
-						this.plugin.settings.maxColumnWidth = Number(value);
-						await this.plugin.saveSettings();
-					})
-			);
-
 		containerEl.createEl("h5", { text: "Column Width Behavior" });
 
 		new Setting(containerEl)
 			.setName("Default Column Width Behavior")
-			.addDropdown((dropdown) =>
+			.addDropdown((dropdown) => {
 				dropdown
 					.addOption("1", "disabled")
 					.addOption("2", "fit-content")
@@ -190,25 +162,45 @@ class SampleSettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.defaultColumnWidthBehavior = value;
 						await this.plugin.saveSettings();
-					})
-			);
+					});
+			});
 
-		const customWidthSetting = containerEl.createDiv();
-		new Setting(customWidthSetting)
+		new Setting(containerEl)
 			.setName("Custom Width")
 			.setDesc("Set the minimum column width for all columns in pixels.")
-			.addText((text) =>
-				text
-					.setPlaceholder("Enter your secret")
-					.setValue(
-						(
-							this.plugin.settings.customColumnWidth ?? 150
-						).toString()
-					)
+			.addText((text) => {
+				text.setPlaceholder("Enter your secret")
+					.setValue(this.plugin.settings.customColumnWidth.toString())
 					.onChange(async (value) => {
 						this.plugin.settings.customColumnWidth = Number(value);
 						await this.plugin.saveSettings();
-					})
-			);
+					});
+			});
+
+		containerEl.createEl("h5", { text: "Column Width Limits" });
+
+		new Setting(containerEl)
+			.setName("Maximum Column Width")
+			.setDesc("Set the maximum column width for all columns.")
+			.addText((text) => {
+				text.setPlaceholder("300")
+					.setValue(this.plugin.settings.maxColumnWidth.toString())
+					.onChange(async (value) => {
+						this.plugin.settings.maxColumnWidth = Number(value);
+						await this.plugin.saveSettings();
+					});
+			});
+
+		new Setting(containerEl)
+			.setName("Minimum Column Width")
+			.setDesc("Set the minimum column width for all columns.")
+			.addText((text) => {
+				text.setPlaceholder("100")
+					.setValue(this.plugin.settings.minColumnWidth.toString())
+					.onChange(async (value) => {
+						this.plugin.settings.minColumnWidth = Number(value);
+						await this.plugin.saveSettings();
+					});
+			});
 	}
 }
