@@ -1,6 +1,6 @@
 {
-	"id": "base-column-width-plugin",
-	"name": "Base Column Width Plugin",
+	"id": "base-column-width",
+	"name": "Base Column Width",
 	"version": "0.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "Set the base column width to fit content or a custom width using pixels.",
