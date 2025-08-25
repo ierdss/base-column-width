@@ -6,3 +6,8 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+
+* {
+	--bases-table-column-min-width: 100px;
+	--bases-table-column-max-width: 300px;
+}
