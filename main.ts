@@ -15,12 +15,14 @@ interface BaseColumnWidthSettings {
 	minColumnWidth: number;
 	maxColumnWidth: number;
 	defaultColumnWidthBehavior: string;
+	customColumnWidth?: number;
 }
 
 const DEFAULT_SETTINGS: BaseColumnWidthSettings = {
 	minColumnWidth: 100,
 	maxColumnWidth: 300,
 	defaultColumnWidthBehavior: "1",
+	customColumnWidth: 150,
 };
 
 export default class BaseColumnWidthPlugin extends Plugin {
@@ -147,12 +149,14 @@ class SampleSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
+		containerEl.createEl("h5", { text: "Column Width Limits" });
+
 		new Setting(containerEl)
 			.setName("Minimum Column Width")
 			.setDesc("Set the minimum column width for all columns.")
 			.addText((text) =>
 				text
-					.setPlaceholder("Enter your secret")
+					.setPlaceholder("100")
 					.setValue(this.plugin.settings.minColumnWidth.toString())
 					.onChange(async (value) => {
 						this.plugin.settings.minColumnWidth = Number(value);
@@ -165,13 +169,15 @@ class SampleSettingTab extends PluginSettingTab {
 			.setDesc("Set the maximum column width for all columns.")
 			.addText((text) =>
 				text
-					.setPlaceholder("Lorem ipsum")
+					.setPlaceholder("300")
 					.setValue(this.plugin.settings.maxColumnWidth.toString())
 					.onChange(async (value) => {
 						this.plugin.settings.maxColumnWidth = Number(value);
 						await this.plugin.saveSettings();
 					})
 			);
+
+		containerEl.createEl("h5", { text: "Column Width Behavior" });
 
 		new Setting(containerEl)
 			.setName("Default Column Width Behavior")
@@ -183,6 +189,7 @@ class SampleSettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.defaultColumnWidthBehavior)
 					.onChange(async (value) => {
 						this.plugin.settings.defaultColumnWidthBehavior = value;
+						await this.plugin.saveSettings();
 					})
 			);
 
@@ -193,9 +200,13 @@ class SampleSettingTab extends PluginSettingTab {
 			.addText((text) =>
 				text
 					.setPlaceholder("Enter your secret")
-					.setValue(this.plugin.settings.minColumnWidth.toString())
+					.setValue(
+						(
+							this.plugin.settings.customColumnWidth ?? 150
+						).toString()
+					)
 					.onChange(async (value) => {
-						this.plugin.settings.minColumnWidth = Number(value);
+						this.plugin.settings.customColumnWidth = Number(value);
 						await this.plugin.saveSettings();
 					})
 			);
