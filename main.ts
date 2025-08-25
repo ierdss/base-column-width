@@ -12,11 +12,15 @@ import {
 // Remember to rename these classes and interfaces!
 
 interface BaseColumnWidthSettings {
-	mySetting: string;
+	minColumnWidth: number;
+	maxColumnWidth: number;
+	defColumnWidthBehavior: string;
 }
 
 const DEFAULT_SETTINGS: BaseColumnWidthSettings = {
-	mySetting: "default",
+	minColumnWidth: 100,
+	maxColumnWidth: 300,
+	defColumnWidthBehavior: "1",
 };
 
 export default class BaseColumnWidthPlugin extends Plugin {
@@ -144,14 +148,41 @@ class SampleSettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName("Setting #1")
-			.setDesc("It's a secret")
+			.setName("Default Column Width Behavior")
+			.addDropdown((dropdown) =>
+				dropdown
+					.addOption("1", "disabled")
+					.addOption("2", "fit-content")
+					.addOption("3", "custom")
+					.setValue(this.plugin.settings.defColumnWidthBehavior)
+					.onChange(async (value) => {
+						this.plugin.settings.defColumnWidthBehavior = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Minimum Column Width")
+			.setDesc("Set the minimum column width for all columns.")
 			.addText((text) =>
 				text
 					.setPlaceholder("Enter your secret")
-					.setValue(this.plugin.settings.mySetting)
+					.setValue(this.plugin.settings.minColumnWidth.toString())
 					.onChange(async (value) => {
-						this.plugin.settings.mySetting = value;
+						this.plugin.settings.minColumnWidth = Number(value);
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Maximum Column Width")
+			.setDesc("Set the maximum column width for all columns.")
+			.addText((text) =>
+				text
+					.setPlaceholder("Lorem ipsum")
+					.setValue(this.plugin.settings.maxColumnWidth.toString())
+					.onChange(async (value) => {
+						this.plugin.settings.maxColumnWidth = Number(value);
 						await this.plugin.saveSettings();
 					})
 			);
