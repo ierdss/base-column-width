@@ -97,9 +97,9 @@ See https://github.com/obsidianmd/obsidian-api
 
 ## Tasks
 
--   [ ] Add a setting for min width for all columns
--   [ ] Add a setting for max width for all columns
--   [ ] Add a setting for new bases.
+-   [x] Add a setting for min width for all columns
+-   [x] Add a setting for max width for all columns
+-   [x] Add a setting for new bases.
     -   Option 1 (None): Does nothing
     -   Option 2 (Fit Content): Make all columns fit their content.
     -   Option 3 (Custom Pixels): User provides a default number.
