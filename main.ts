@@ -90,33 +90,33 @@ class SampleSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl("h5", { text: "Column Width Behavior" });
+		// containerEl.createEl("h5", { text: "Column Width Behavior" });
 
-		new Setting(containerEl)
-			.setName("Default Column Width Behavior")
-			.addDropdown((dropdown) => {
-				dropdown
-					.addOption("1", "disabled")
-					.addOption("2", "fit-content")
-					.addOption("3", "custom")
-					.setValue(this.plugin.settings.defaultColumnWidthBehavior)
-					.onChange(async (value) => {
-						this.plugin.settings.defaultColumnWidthBehavior = value;
-						await this.plugin.saveSettings();
-					});
-			});
+		// new Setting(containerEl)
+		// 	.setName("Default Column Width Behavior")
+		// 	.addDropdown((dropdown) => {
+		// 		dropdown
+		// 			.addOption("1", "disabled")
+		// 			.addOption("2", "fit-content")
+		// 			.addOption("3", "custom")
+		// 			.setValue(this.plugin.settings.defaultColumnWidthBehavior)
+		// 			.onChange(async (value) => {
+		// 				this.plugin.settings.defaultColumnWidthBehavior = value;
+		// 				await this.plugin.saveSettings();
+		// 			});
+		// 	});
 
-		new Setting(containerEl)
-			.setName("Custom Width")
-			.setDesc("Set the minimum column width for all columns in pixels.")
-			.addText((text) => {
-				text.setPlaceholder("150")
-					.setValue(this.plugin.settings.customColumnWidth.toString())
-					.onChange(async (value) => {
-						this.plugin.settings.customColumnWidth = Number(value);
-						await this.plugin.saveSettings();
-					});
-			});
+		// new Setting(containerEl)
+		// 	.setName("Custom Width")
+		// 	.setDesc("Set the minimum column width for all columns in pixels.")
+		// 	.addText((text) => {
+		// 		text.setPlaceholder("150")
+		// 			.setValue(this.plugin.settings.customColumnWidth.toString())
+		// 			.onChange(async (value) => {
+		// 				this.plugin.settings.customColumnWidth = Number(value);
+		// 				await this.plugin.saveSettings();
+		// 			});
+		// 	});
 
 		containerEl.createEl("h5", { text: "Column Width Limits" });
 
