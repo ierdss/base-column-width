@@ -176,35 +176,118 @@ class SampleSettingTab extends PluginSettingTab {
 export function addFileMenu(file: TFile, menu: Menu) {
 	if (file.extension === "base") {
 		menu.addItem((item) => {
-			item.setTitle("Do something with a base file")
-				.setIcon("dice")
-				.onClick(() => {
-					new BaseColumnWidthModal(this.app).open();
+			item.setTitle("Edit Column Sizes")
+				.setIcon("ruler")
+				.onClick(async () => {
+					const fileContent = await this.app.vault.read(file);
+					let initialData;
+					try {
+						initialData = parseBaseFileContent(fileContent);
+					} catch (e) {
+						console.error("Failed to parse base file content:", e);
+						this.app.notice(
+							"Error: Could not read file data. Check file format."
+						);
+						return;
+					}
+					new BaseColumnWidthModal(
+						this.app,
+						file,
+						initialData
+					).open();
 				});
 		});
 	}
 }
 
 export class BaseColumnWidthModal extends Modal {
-	constructor(app: App) {
-		super(app);
-		this.setTitle("What's your name?");
+	file: TFile;
+	initialData: Record<string, number>; // Use a dynamic type for the column data
+	result: Record<string, number>;
 
-		let name = "";
-		new Setting(this.contentEl).setName("Name").addText((text) =>
-			text.onChange((value) => {
-				name = value;
+	constructor(app: App, file: TFile, initialData: Record<string, number>) {
+		super(app);
+		this.file = file;
+		this.initialData = initialData;
+		this.result = { ...initialData }; // Create a copy to edit
+	}
+
+	onOpen() {
+		const { contentEl } = this;
+		contentEl.createEl("h2", {
+			text: `Edit Column Sizes for ${this.file.name}`,
+		});
+
+		// Iterate over the keys of the initial data object.
+		// This will create a setting for each column found in the file.
+		for (const key in this.initialData) {
+			if (Object.prototype.hasOwnProperty.call(this.initialData, key)) {
+				new Setting(contentEl)
+					.setName(key) // Set the setting name to the column's key (e.g., "column1")
+					.setDesc(`Enter the size for the column "${key}".`)
+					.addText((text) =>
+						text
+							.setValue(this.initialData[key].toString())
+							.onChange((value) => {
+								// Update the result object with the new value
+								this.result[key] = parseInt(value) || 0;
+							})
+					);
+			}
+		}
+
+		// Add a button to save changes
+		new Setting(contentEl).addButton((button) =>
+			button.setButtonText("Save Changes").onClick(() => {
+				this.onSave();
+				this.close();
 			})
 		);
-
-		new Setting(this.contentEl).addButton((btn) =>
-			btn
-				.setButtonText("Submit")
-				.setCta()
-				.onClick(() => {
-					this.close();
-					onSubmit(name);
-				})
-		);
 	}
+
+	onClose() {
+		const { contentEl } = this;
+		contentEl.empty();
+	}
+
+	async onSave() {
+		const updatedContent = JSON.stringify(this.result, null, 2);
+		await this.app.vault.modify(this.file, updatedContent);
+		console.log("File saved successfully!");
+		new Notice("Column sizes updated successfully!");
+	}
+}
+
+function parseBaseFileContent(content: string): Record<string, number> {
+	const lines = content.split("\n");
+	let inColumnSizeSection = false;
+	const columnSizes: Record<string, number> = {};
+
+	for (const line of lines) {
+		const trimmedLine = line.trim();
+
+		if (trimmedLine.startsWith("columnSize:")) {
+			inColumnSizeSection = true;
+			continue;
+		}
+
+		if (inColumnSizeSection) {
+			// Check if the indentation level changes, which might signal the end of the section
+			const leadingSpaces = line.match(/^\s*/)?.[0].length ?? 0;
+			if (leadingSpaces === 0 && trimmedLine !== "") {
+				inColumnSizeSection = false;
+				continue;
+			}
+
+			const parts = trimmedLine.split(":").map((part) => part.trim());
+			if (parts.length === 2) {
+				const key = parts[0];
+				const value = parseInt(parts[1], 10);
+				if (!isNaN(value)) {
+					columnSizes[key] = value;
+				}
+			}
+		}
+	}
+	return columnSizes;
 }
