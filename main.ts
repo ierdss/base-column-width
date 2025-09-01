@@ -179,8 +179,15 @@ export function addFileMenu(file: TFile, menu: Menu) {
 			item.setTitle("Do something with a base file")
 				.setIcon("dice")
 				.onClick(() => {
-					new Notice("You clicked the menu item for a base file!");
+					new BaseColumnWidthModal(this.app).open();
 				});
 		});
+	}
+}
+
+export class BaseColumnWidthModal extends Modal {
+	constructor(app: App) {
+		super(app);
+		this.setContent("Look at me, I'm a modal! 👀");
 	}
 }
