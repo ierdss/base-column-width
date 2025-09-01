@@ -322,7 +322,7 @@ function updateColumnSizesInFile(
 			// Now, add the new column sizes, each with an indentation.
 			for (const key in newSizes) {
 				// Use two spaces for indentation to match the original format
-				outputLines.push(`  ${key}: ${newSizes[key]}`);
+				outputLines.push(`      ${key}: ${newSizes[key]}`);
 			}
 		} else if (inColumnSizeSection && line.trim() === "") {
 			// An empty line signals the end of the section
