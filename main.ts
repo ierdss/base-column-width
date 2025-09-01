@@ -185,7 +185,7 @@ export function addFileMenu(file: TFile, menu: Menu) {
 						initialData = parseBaseFileContent(fileContent);
 					} catch (e) {
 						console.error("Failed to parse base file content:", e);
-						this.app.notice(
+						new Notice(
 							"Error: Could not read file data. Check file format."
 						);
 						return;
@@ -238,10 +238,13 @@ export class BaseColumnWidthModal extends Modal {
 
 		// Add a button to save changes
 		new Setting(contentEl).addButton((button) =>
-			button.setButtonText("Save Changes").onClick(() => {
-				this.onSave();
-				this.close();
-			})
+			button
+				.setCta()
+				.setButtonText("Save Changes")
+				.onClick(() => {
+					this.onSave();
+					this.close();
+				})
 		);
 	}
 
