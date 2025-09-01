@@ -251,8 +251,17 @@ export class BaseColumnWidthModal extends Modal {
 	}
 
 	async onSave() {
-		const updatedContent = JSON.stringify(this.result, null, 2);
+		const originalContent = await this.app.vault.read(this.file);
+
+		// 2. Use the serialization function to get the updated content
+		const updatedContent = updateColumnSizesInFile(
+			originalContent,
+			this.result
+		);
+
+		// 3. Write the complete, modified content back to the file
 		await this.app.vault.modify(this.file, updatedContent);
+
 		console.log("File saved successfully!");
 		new Notice("Column sizes updated successfully!");
 	}
@@ -290,4 +299,39 @@ function parseBaseFileContent(content: string): Record<string, number> {
 		}
 	}
 	return columnSizes;
+}
+
+// Assuming this is in a utility file or within the same plugin file
+function updateColumnSizesInFile(
+	originalContent: string,
+	newSizes: Record<string, number>
+): string {
+	const lines = originalContent.split("\n");
+	let outputLines: string[] = [];
+	let inColumnSizeSection = false;
+
+	for (const line of lines) {
+		if (line.trim().startsWith("columnSize:")) {
+			// Found the start of the columnSize section
+			inColumnSizeSection = true;
+			outputLines.push(line); // Keep the 'columnSize:' line
+
+			// Now, add the new column sizes, each with an indentation.
+			for (const key in newSizes) {
+				// Use two spaces for indentation to match the original format
+				outputLines.push(`  ${key}: ${newSizes[key]}`);
+			}
+		} else if (inColumnSizeSection && line.trim() === "") {
+			// An empty line signals the end of the section
+			inColumnSizeSection = false;
+			outputLines.push(line);
+		} else if (inColumnSizeSection) {
+			// Skip the old lines in the columnSize section
+			continue;
+		} else {
+			// For all other lines, add them to the output
+			outputLines.push(line);
+		}
+	}
+	return outputLines.join("\n");
 }
