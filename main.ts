@@ -2,11 +2,13 @@ import {
 	App,
 	Editor,
 	MarkdownView,
+	Menu,
 	Modal,
 	Notice,
 	Plugin,
 	PluginSettingTab,
 	Setting,
+	TFile,
 } from "obsidian";
 
 // Remember to rename these classes and interfaces!
@@ -36,8 +38,15 @@ export default class BaseColumnWidthPlugin extends Plugin {
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new SampleSettingTab(this.app, this));
 
+		this.registerEvent(
+			this.app.workspace.on("file-menu", (menu, file) => {
+				addFileMenu(file, menu);
+			})
+		);
+
 		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
 		// Using this function will automatically remove the event listener when this plugin is disabled.
+
 		this.registerDomEvent(document, "click", (evt: MouseEvent) => {
 			console.log("click", evt);
 		});
@@ -160,5 +169,24 @@ class SampleSettingTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					});
 			});
+	}
+}
+
+// Helper functions
+async function getBaseFiles(app: App) {
+	const files = app.vault.getFiles();
+	const baseFiles = files.filter((file: TFile) => file.extension === "base");
+	return baseFiles;
+}
+
+export function addFileMenu(file: TFile, menu: Menu) {
+	if (file.extension === "base") {
+		menu.addItem((item) => {
+			item.setTitle("Do something with a base file")
+				.setIcon("dice")
+				.onClick(() => {
+					new Notice("You clicked the menu item for a base file!");
+				});
+		});
 	}
 }
