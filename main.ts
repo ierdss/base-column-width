@@ -173,12 +173,6 @@ class SampleSettingTab extends PluginSettingTab {
 }
 
 // Helper functions
-async function getBaseFiles(app: App) {
-	const files = app.vault.getFiles();
-	const baseFiles = files.filter((file: TFile) => file.extension === "base");
-	return baseFiles;
-}
-
 export function addFileMenu(file: TFile, menu: Menu) {
 	if (file.extension === "base") {
 		menu.addItem((item) => {
