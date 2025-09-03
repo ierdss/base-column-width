@@ -39,7 +39,7 @@ export default class BaseColumnWidthPlugin extends Plugin {
 		// Adds a button on the "file-menu" and "editor-menu"
 		this.registerEvent(
 			this.app.workspace.on("file-menu", (menu, file) => {
-				addFileMenu(file, menu);
+				addMenuItem(file, menu);
 			})
 		);
 	}
@@ -143,17 +143,21 @@ class BaseColumnWidthSettingTab extends PluginSettingTab {
 	}
 }
 
-// Helper functions
-export function addFileMenu(file: TFile, menu: Menu) {
+// Plugin functions
+//
+export function addMenuItem(file: TFile, menu: Menu) {
+	// Only add the menu item for .base files
 	if (file.extension === "base") {
 		menu.addItem((item) => {
 			item.setTitle("Edit Column Sizes")
 				.setIcon("ruler")
 				.onClick(async () => {
+					// Get the file content
 					const fileContent = await this.app.vault.read(file);
 					let initialData;
 					try {
-						initialData = parseBaseFileContent(fileContent);
+						// Parse the file content to extract column data
+						initialData = parseBaseFile(fileContent);
 					} catch (e) {
 						console.error("Failed to parse base file content:", e);
 						new Notice(
@@ -161,6 +165,7 @@ export function addFileMenu(file: TFile, menu: Menu) {
 						);
 						return;
 					}
+					// Open the modal with the initial data
 					new BaseColumnWidthModal(
 						this.app,
 						file,
@@ -241,7 +246,7 @@ export class BaseColumnWidthModal extends Modal {
 	}
 }
 
-function parseBaseFileContent(content: string): Record<string, number> {
+function parseBaseFile(content: string): Record<string, number> {
 	const lines = content.split("\n");
 	let inColumnSizeSection = false;
 	const columnSizes: Record<string, number> = {};
