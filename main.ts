@@ -34,7 +34,7 @@ export default class BaseColumnWidthPlugin extends Plugin {
 		await this.loadSettings();
 
 		// Adds a settings tab under "Community Plugins"
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+		this.addSettingTab(new BaseColumnWidthSettingTab(this.app, this));
 
 		// Adds a button on the "file-menu" and "editor-menu"
 		this.registerEvent(
@@ -59,7 +59,7 @@ export default class BaseColumnWidthPlugin extends Plugin {
 	}
 }
 
-class SampleSettingTab extends PluginSettingTab {
+class BaseColumnWidthSettingTab extends PluginSettingTab {
 	plugin: BaseColumnWidthPlugin;
 
 	constructor(app: App, plugin: BaseColumnWidthPlugin) {
