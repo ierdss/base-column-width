@@ -194,12 +194,20 @@ export class BaseColumnWidthModal extends Modal {
 			text: `Edit Column Sizes for ${this.file.name}`,
 		});
 
+		// Get the type and make sure that type is of "table"
+		// If "table", then get the "name:"
+		// Get the number of columns in the "order:" array
+		// If columnSize does not exist, create it with default values as 150 from settings
+		// If columnSize exists, read the values and populate the modal with them
+		// If columnSize has fewer entries than order, add the missing ones with default values
+		// Display the column names and their sizes in the modal
+
 		// Iterate over the keys of the initial data object.
 		// This will create a setting for each column found in the file.
 		for (const key in this.initialData) {
 			if (Object.prototype.hasOwnProperty.call(this.initialData, key)) {
 				new Setting(contentEl)
-					.setName(key) // Set the setting name to the column's key (e.g., "column1")
+					.setName(key)
 					.setDesc(`Enter the size for the column "${key}".`)
 					.addText((text) =>
 						text
