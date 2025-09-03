@@ -11,8 +11,6 @@ import {
 	TFile,
 } from "obsidian";
 
-// Remember to rename these classes and interfaces!
-
 interface BaseColumnWidthSettings {
 	minColumnWidth: number;
 	maxColumnWidth: number;
@@ -35,25 +33,14 @@ export default class BaseColumnWidthPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		// This adds a settings tab so the user can configure various aspects of the plugin
+		// Adds a settings tab under "Community Plugins"
 		this.addSettingTab(new SampleSettingTab(this.app, this));
 
+		// Adds a button on the "file-menu" and "editor-menu"
 		this.registerEvent(
 			this.app.workspace.on("file-menu", (menu, file) => {
 				addFileMenu(file, menu);
 			})
-		);
-
-		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
-		// Using this function will automatically remove the event listener when this plugin is disabled.
-
-		this.registerDomEvent(document, "click", (evt: MouseEvent) => {
-			console.log("click", evt);
-		});
-
-		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
-		this.registerInterval(
-			window.setInterval(() => console.log("setInterval"), 5 * 60 * 1000)
 		);
 	}
 
@@ -69,22 +56,6 @@ export default class BaseColumnWidthPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
-	}
-}
-
-class SampleModal extends Modal {
-	constructor(app: App) {
-		super(app);
-	}
-
-	onOpen() {
-		const { contentEl } = this;
-		contentEl.setText("Woah!");
-	}
-
-	onClose() {
-		const { contentEl } = this;
-		contentEl.empty();
 	}
 }
 
