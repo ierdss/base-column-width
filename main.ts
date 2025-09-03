@@ -206,17 +206,14 @@ export class BaseColumnWidthModal extends Modal {
 		// This will create a setting for each column found in the file.
 		for (const key in this.initialData) {
 			if (Object.prototype.hasOwnProperty.call(this.initialData, key)) {
-				new Setting(contentEl)
-					.setName(key)
-					.setDesc(`Enter the size for the column "${key}".`)
-					.addText((text) =>
-						text
-							.setValue(this.initialData[key].toString())
-							.onChange((value) => {
-								// Update the result object with the new value
-								this.result[key] = parseInt(value) || 0;
-							})
-					);
+				new Setting(contentEl).setName(key).addText((text) =>
+					text
+						.setValue(this.initialData[key].toString())
+						.onChange((value) => {
+							// Update the result object with the new value
+							this.result[key] = parseInt(value) || 0;
+						})
+				);
 			}
 		}
 
