@@ -40,8 +40,10 @@ export default class BaseColumnWidthPlugin extends Plugin {
 		// Add a ribbon icon to the left sidebar for debugging
 		this.addRibbonIcon("code-xml", "Debug Output", (event) => {
 			const output = getSelectedView(this.app.workspace);
+			const wspace = this.app.workspace.activeLeaf;
 			console.log(output);
 			new Notice(output);
+			console.log(wspace);
 		});
 
 		// Adds a button on the "file-menu" and "editor-menu"
