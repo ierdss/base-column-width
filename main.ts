@@ -36,6 +36,11 @@ export default class BaseColumnWidthPlugin extends Plugin {
 		// Adds a settings tab under "Community Plugins"
 		this.addSettingTab(new BaseColumnWidthSettingTab(this.app, this));
 
+		// Add a ribbon icon to the left sidebar for debugging
+		this.addRibbonIcon("code-xml", "Debug Output", (event) => {
+			new Notice("Copied");
+		});
+
 		// Adds a button on the "file-menu" and "editor-menu"
 		this.registerEvent(
 			this.app.workspace.on("file-menu", (menu, file: TFile) => {
