@@ -197,6 +197,7 @@ export class BaseColumnWidthModal extends Modal {
 		// Get the type and make sure that type is of "table"
 		// If "table", then get the "name:"
 		// Get the number of columns in the "order:" array
+		// Compare the number of columns in "order" to the number of entries in "columnSize"
 		// If columnSize does not exist, create it with default values as 150 from settings
 		// If columnSize exists, read the values and populate the modal with them
 		// If columnSize has fewer entries than order, add the missing ones with default values
