@@ -1,4 +1,4 @@
-export default function getSelectedBaseView() {
+export default function getSelectedView() {
 	const activeLeaf = this.app.workspace.activeLeaf;
 	const activeView = activeLeaf?.view;
 	if (activeView && activeView.type === "markdown") {
