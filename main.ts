@@ -85,30 +85,7 @@ export default class BaseColumnWidthPlugin extends Plugin {
 						item.setTitle("Distribute Column Sizes")
 							.setIcon("ruler")
 							.onClick(async () => {
-								// Get the file content
-								const fileContent = await this.app.vault.read(
-									file
-								);
-								let initialData;
-								try {
-									// Parse the file content to extract column data
-									initialData = parseBaseFile(fileContent);
-								} catch (e) {
-									console.error(
-										"Failed to parse base file content:",
-										e
-									);
-									new Notice(
-										"Error: Could not read file data. Check file format."
-									);
-									return;
-								}
-								// Open the modal with the initial data
-								new BaseColumnWidthModal(
-									this.app,
-									file,
-									initialData
-								).open();
+								new Notice("Distributed Columns");
 							});
 					});
 				}
