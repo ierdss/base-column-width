@@ -252,37 +252,73 @@ export class BaseColumnWidthModal extends Modal {
 	}
 }
 
+// TODO: Make into a reusable function
+// TODO: Make startsWith as a string parameter
+/**
+ * Parses a custom YAML-like file content to extract column sizes from the 'columnSize' section.
+ * This function is designed to handle a specific file format where column sizes are listed
+ * as key-value pairs under a 'columnSize:' heading.
+ * * @param content The entire file content as a single string.
+ * @returns A Record (or a map) of column names to their integer sizes.
+ */
 function parseBaseFile(content: string): Record<string, number> {
+	// Split the entire file content into an array of individual lines.
 	const lines = content.split("\n");
+
+	// A flag to keep track of whether the parser is currently inside the 'columnSize' section.
+	// TODO: Make into a neutral flag
 	let inColumnSizeSection = false;
+
+	// An object to store the extracted column name and size pairs.
 	const columnSizes: Record<string, number> = {};
 
+	// Loop through each line of the file.
 	for (const line of lines) {
+		// Remove leading/trailing whitespace from the current line for easier comparison.
 		const trimmedLine = line.trim();
 
+		// Check if the current line is the start of the 'columnSize' section.
 		if (trimmedLine.startsWith("columnSize:")) {
+			// Set the flag to true, so subsequent lines will be processed.
 			inColumnSizeSection = true;
+			// Move to the next line without processing this one.
 			continue;
 		}
 
+		// Only run this block if the parser is currently inside the 'columnSize' section.
 		if (inColumnSizeSection) {
-			// Check if the indentation level changes, which might signal the end of the section
+			// Check the indentation level of the current line.
+			// This is a common way to detect the end of a YAML block.
+			// TODO: Make regex detect empty space orr "- type:" as the end of the block
 			const leadingSpaces = line.match(/^\s*/)?.[0].length ?? 0;
+
+			// If the indentation returns to zero (and the line isn't empty),
+			// it signifies that the 'columnSize' section has ended.
 			if (leadingSpaces === 0 && trimmedLine !== "") {
+				// Set the flag to false to stop processing lines for this section.
 				inColumnSizeSection = false;
+				// Move to the next line.
 				continue;
 			}
 
+			// Split the line at the colon to separate the key (column name) and the value (size).
 			const parts = trimmedLine.split(":").map((part) => part.trim());
+
+			// Ensure the line has a key and a value (e.g., "key: value").
 			if (parts.length === 2) {
-				const key = parts[0];
-				const value = parseInt(parts[1], 10);
+				const key = parts[0]; // The column name (e.g., "file.name").
+				const value = parseInt(parts[1], 10); // The size, converted to an integer.
+
+				// Check if the value is a valid number.
 				if (!isNaN(value)) {
+					// Add the key-value pair to our results object.
 					columnSizes[key] = value;
 				}
 			}
 		}
 	}
+
+	// Return the final object containing all the extracted column sizes.
 	return columnSizes;
 }
 
