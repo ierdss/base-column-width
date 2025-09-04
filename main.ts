@@ -10,6 +10,7 @@ import {
 	Setting,
 	TFile,
 } from "obsidian";
+import getSelectedView from "utility/getSelectedView";
 
 interface BaseColumnWidthSettings {
 	minColumnWidth: number;
@@ -38,7 +39,9 @@ export default class BaseColumnWidthPlugin extends Plugin {
 
 		// Add a ribbon icon to the left sidebar for debugging
 		this.addRibbonIcon("code-xml", "Debug Output", (event) => {
-			new Notice("Copied");
+			const output = getSelectedView(this.app.workspace);
+			console.log(output);
+			new Notice(output);
 		});
 
 		// Adds a button on the "file-menu" and "editor-menu"
