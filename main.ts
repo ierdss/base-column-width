@@ -11,6 +11,7 @@ import {
 	TFile,
 } from "obsidian";
 import getSelectedView from "utility/getSelectedView";
+import getViewColumns from "utility/getViewColumns";
 
 interface BaseColumnWidthSettings {
 	minColumnWidth: number;
@@ -39,7 +40,8 @@ export default class BaseColumnWidthPlugin extends Plugin {
 
 		// Add a ribbon icon to the left sidebar for debugging
 		this.addRibbonIcon("code-xml", "Debug Output", (event) => {
-			const output = getSelectedView(this.app.workspace);
+			// const output = getSelectedView(this.app.workspace);
+			const output = getViewColumns(this.app.workspace);
 			const wspace = this.app.workspace.activeLeaf;
 			console.log(output);
 			new Notice(output);
