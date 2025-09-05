@@ -40,12 +40,13 @@ export default class BaseColumnWidthPlugin extends Plugin {
 
 		// Add a ribbon icon to the left sidebar for debugging
 		this.addRibbonIcon("code-xml", "Debug Output", (event) => {
+			console.log(this.app.workspace.activeLeaf.view);
 			// const output = getSelectedView(this.app.workspace);
-			const output = getViewColumns(this.app.workspace);
-			const wspace = this.app.workspace.activeLeaf;
-			console.log(output);
-			new Notice(output);
-			console.log(wspace);
+			// const output = getViewColumns(this.app.workspace);
+			// const wspace = this.app.workspace.activeLeaf;
+			// console.log(output);
+			// new Notice(output);
+			// console.log(wspace);
 		});
 
 		// Adds a button on the "file-menu" and "editor-menu"
@@ -276,15 +277,6 @@ export class BaseColumnWidthModal extends Modal {
 	}
 }
 
-// TODO: Make into a reusable function
-// TODO: Make startsWith as a string parameter
-/**
- * Parses a custom YAML-like file content to extract column sizes from the 'columnSize' section.
- * This function is designed to handle a specific file format where column sizes are listed
- * as key-value pairs under a 'columnSize:' heading.
- * * @param content The entire file content as a single string.
- * @returns A Record (or a map) of column names to their integer sizes.
- */
 function parseBaseFile(start: string, content: string): Record<string, number> {
 	// Split the entire file content into an array of individual lines.
 	const lines = content.split("\n");
@@ -295,9 +287,7 @@ function parseBaseFile(start: string, content: string): Record<string, number> {
 
 	const columnSizes: Record<string, number> = {};
 
-	// Loop through each line of the file.
 	for (const line of lines) {
-		// Remove leading/trailing whitespace from the current line for easier comparison.
 		const trimmedLine = line.trim();
 
 		// Check if the current line is the start of the 'columnSize' section.
@@ -342,7 +332,6 @@ function parseBaseFile(start: string, content: string): Record<string, number> {
 		}
 		if (isTable && trimmedLine.startsWith(`name: ${start}`)) {
 			inStart = true;
-			break;
 		} else {
 			isTable = false;
 		}
@@ -353,6 +342,7 @@ function parseBaseFile(start: string, content: string): Record<string, number> {
 	}
 
 	// Return the final object containing all the extracted column sizes.
+	console.log(columnSizes);
 	return columnSizes;
 }
 
