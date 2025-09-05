@@ -65,7 +65,7 @@ export default class BaseColumnWidthPlugin extends Plugin {
 								let initialData;
 								try {
 									// Parse the file content to extract column data
-									initialData = parseBaseFile(
+									initialData = getViewColumnSizes(
 										getSelectedView(this.app.workspace),
 										fileContent
 									);
@@ -277,8 +277,10 @@ export class BaseColumnWidthModal extends Modal {
 	}
 }
 
-function parseBaseFile(start: string, content: string): Record<string, number> {
-	// Split the entire file content into an array of individual lines.
+function getViewColumnSizes(
+	start: string,
+	content: string
+): Record<string, number> {
 	const lines = content.split("\n");
 
 	let isTable = false;
@@ -289,24 +291,13 @@ function parseBaseFile(start: string, content: string): Record<string, number> {
 
 	for (const line of lines) {
 		const trimmedLine = line.trim();
-
-		// Check if the current line is the start of the 'columnSize' section.
 		if (inStart && trimmedLine.startsWith("columnSize:")) {
-			// Set the flag to true, so subsequent lines will be processed.
 			inColumnSizeSection = true;
-			// Move to the next line without processing this one.
 			continue;
 		}
 
-		// Only run this block if the parser is currently inside the 'columnSize' section.
 		if (inColumnSizeSection) {
-			// Check the indentation level of the current line.
-			// This is a common way to detect the end of a YAML block.
 			const leadingSpaces = line.match(/^\s*/)?.[0].length ?? 0;
-
-			// If the indentation returns to zero (and the line isn't empty),
-			// it signifies that the 'columnSize' section has ended.
-			// Check for an empty line OR a new block starting with "- " or a similar pattern
 			if (
 				(leadingSpaces === 0 && trimmedLine !== "") ||
 				trimmedLine.startsWith("- type:")
@@ -315,17 +306,11 @@ function parseBaseFile(start: string, content: string): Record<string, number> {
 				continue;
 			}
 
-			// Split the line at the colon to separate the key (column name) and the value (size).
 			const parts = trimmedLine.split(":").map((part) => part.trim());
-
-			// Ensure the line has a key and a value (e.g., "key: value").
 			if (parts.length === 2) {
-				const key = parts[0]; // The column name (e.g., "file.name").
-				const value = parseInt(parts[1], 10); // The size, converted to an integer.
-
-				// Check if the value is a valid number.
+				const key = parts[0];
+				const value = parseInt(parts[1], 10);
 				if (!isNaN(value)) {
-					// Add the key-value pair to our results object.
 					columnSizes[key] = value;
 				}
 			}
@@ -341,8 +326,6 @@ function parseBaseFile(start: string, content: string): Record<string, number> {
 		}
 	}
 
-	// Return the final object containing all the extracted column sizes.
-	console.log(columnSizes);
 	return columnSizes;
 }
 
