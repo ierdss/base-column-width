@@ -101,3 +101,7 @@ See https://github.com/obsidianmd/obsidian-api
 -   The controller object is vital for the program to detect which view is currently being used. It only appears when you make updates to the file.
     -   UPDATE 1: I don't know why but the controller now always appear.
     -   UPDATE 2: This only happens when clicking the menu item on the file-menu. The editor-menu does not have this problem.
+
+## Discoveries
+
+-   (Bug) Obsidian does not support same name views. The second view would takethe config of the first view.
