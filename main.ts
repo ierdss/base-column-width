@@ -311,6 +311,9 @@ function getViewColumnSizes(
 
 	for (const line of lines) {
 		const trimmedLine = line.trim();
+		if (inColumnSizeSection && line.trim().startsWith("- type:")) {
+			break;
+		}
 		if (inStart && trimmedLine.startsWith("columnSize:")) {
 			inColumnSizeSection = true;
 			continue;
