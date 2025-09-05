@@ -286,7 +286,8 @@ export class BaseColumnWidthModal extends Modal {
 		// 2. Use the serialization function to get the updated content
 		const updatedContent = updateColumnSizesInFile(
 			originalContent,
-			this.initialData
+			this.initialData,
+			getSelectedView(this.app.workspace)
 		);
 
 		// 3. Write the complete, modified content back to the file
@@ -354,48 +355,48 @@ function getViewColumnSizes(
 
 function updateColumnSizesInFile(
 	originalContent: string,
-	newSizes: Record<string, number>
+	newSizes: Record<string, number>,
+	viewName: string
 ): string {
 	const lines = originalContent.split("\n");
 	let outputLines: string[] = [];
-	let inColumnSizeSection = false;
+	console.log("View Name:", `name: ${viewName}`);
 	console.log("Original Content:", originalContent);
 	console.log("New Sizes:", newSizes);
 
+	let inTable = false;
+	let inView = false;
+	let inSizes = false;
 	let isFinished = false;
 
 	for (const line of lines) {
-		if (
-			(inColumnSizeSection && line.trim().startsWith("- type:")) ||
-			line.trim() === ""
-		) {
-			isFinished = true;
-		}
-		if (isFinished) {
+		if (!inSizes) {
 			outputLines.push(line);
+		}
+		// 1. Check type if "- type: table"
+		if (!isFinished && line.trim().startsWith("- type: table")) {
+			inTable = true;
 			continue;
 		}
-		if (line.trim().startsWith("columnSize:")) {
-			inColumnSizeSection = true;
-			outputLines.push(line); // Keep the 'columnSize:' line
-
-			// Now, add the new column sizes, each with an indentation.
-			// Adds the new columns sizes below the columnSizes line
+		// 2. Check name if name matches viewName
+		if (inTable) {
+			if (line.trim().endsWith(viewName)) {
+				inView = true;
+			}
+			inTable = false;
+			continue;
+		}
+		// 3. Check "columnSize:"
+		if (inView && line.trim().startsWith("columnSize:")) {
+			inSizes = true;
+			// 5. Continue and push "newSizes"
 			for (const key in newSizes) {
-				// Use two spaces for indentation to match the original format
 				outputLines.push(`      ${key}: ${newSizes[key]}`);
 			}
-		} else if (inColumnSizeSection && !line.trim().startsWith("- type:")) {
-			continue;
-		} else if (inColumnSizeSection && line.trim() === "") {
-			// Adds the old column sizes below the new column sizes
-			// An empty line signals the end of the section
-			inColumnSizeSection = false;
-			outputLines.push(line);
-		} else {
-			// For all other lines, add them to the output
-			outputLines.push(line);
+			isFinished = true;
 		}
+
+		// 4. Handle if "columnSize:" does not exist
 	}
 	console.log("Output Lines:", outputLines);
 	return outputLines.join("\n");
