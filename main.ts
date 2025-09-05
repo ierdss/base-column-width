@@ -346,7 +346,6 @@ function getViewColumnSizes(
 		}
 	}
 
-	console.log(columnSizes);
 	return columnSizes;
 }
 
