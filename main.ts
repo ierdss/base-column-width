@@ -205,7 +205,6 @@ export class BaseColumnWidthModal extends Modal {
 	file: TFile;
 	initialData: Record<string, number>;
 	allColumns: Record<string, number>;
-	result: Record<string, number>;
 
 	constructor(
 		app: App,
@@ -217,7 +216,6 @@ export class BaseColumnWidthModal extends Modal {
 		this.file = file;
 		this.initialData = initialData;
 		this.allColumns = allColumns;
-		this.result = { ...initialData }; // Create a copy to edit
 	}
 
 	onOpen() {
@@ -259,7 +257,7 @@ export class BaseColumnWidthModal extends Modal {
 						.setValue(this.initialData[key].toString())
 						.onChange((value) => {
 							// Update the result object with the new value
-							this.result[key] = parseInt(value) || 0;
+							this.initialData[key] = parseInt(value) || 0;
 						})
 				);
 			}
@@ -288,7 +286,7 @@ export class BaseColumnWidthModal extends Modal {
 		// 2. Use the serialization function to get the updated content
 		const updatedContent = updateColumnSizesInFile(
 			originalContent,
-			this.result
+			this.initialData
 		);
 
 		// 3. Write the complete, modified content back to the file
