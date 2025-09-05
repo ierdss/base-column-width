@@ -39,14 +39,13 @@ export default class BaseColumnWidthPlugin extends Plugin {
 		this.addSettingTab(new BaseColumnWidthSettingTab(this.app, this));
 
 		// Add a ribbon icon to the left sidebar for debugging
-		this.addRibbonIcon("code-xml", "Debug Output", (event) => {
-			console.log(this.app.workspace.activeLeaf.view);
-			// const output = getSelectedView(this.app.workspace);
-			// const output = getViewColumns(this.app.workspace);
-			// const wspace = this.app.workspace.activeLeaf;
-			// console.log(output);
-			// new Notice(output);
-			// console.log(wspace);
+		this.addRibbonIcon("code-xml", "Get Selected View", (event) => {
+			const output = getSelectedView(this.app.workspace);
+			console.log("View Name:", output);
+		});
+		this.addRibbonIcon("code-xml", "Get View Columns", (event) => {
+			const output = getViewColumns(this.app.workspace);
+			console.log("View Columns:", output);
 		});
 
 		// Adds a button on the "file-menu" and "editor-menu"
@@ -326,6 +325,7 @@ function getViewColumnSizes(
 		}
 	}
 
+	console.log(columnSizes);
 	return columnSizes;
 }
 
