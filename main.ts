@@ -227,17 +227,28 @@ export class BaseColumnWidthModal extends Modal {
 		});
 
 		// Compare the number of columns in "order" to the number of entries in "columnSize"
-		const missingColumns = Object.keys(this.allColumns).filter(
-			(item) => !Object.keys(this.initialData).includes(item)
-		);
-		console.log(missingColumns);
-		console.log("Before:", this.initialData);
-		if (missingColumns.length > 0) {
+		if (
+			Object.keys(this.allColumns).length >
+			Object.keys(this.initialData).length
+		) {
+			const missingColumns = Object.keys(this.allColumns).filter(
+				(item) => !Object.keys(this.initialData).includes(item)
+			);
 			missingColumns.forEach((item: string) => {
 				this.initialData[item] = 0;
 			});
 		}
-		console.log("After:", this.initialData);
+		if (
+			Object.keys(this.allColumns).length <
+			Object.keys(this.initialData).length
+		) {
+			const remainingColumns = Object.keys(this.initialData).filter(
+				(item) => !Object.keys(this.allColumns).includes(item)
+			);
+			for (const prop of remainingColumns) {
+				delete this.initialData[prop];
+			}
+		}
 
 		// Iterate over the keys of the initial data object.
 		// This will create a setting for each column found in the file.
