@@ -104,4 +104,5 @@ See https://github.com/obsidianmd/obsidian-api
 
 ## Discoveries
 
--   (Bug) Obsidian does not support same name views. The second view would takethe config of the first view.
+-   (Bug) Obsidian does not support same name views. The second view would takethe config of the first view. If you name two tables the same name this will occur.
+    -   (Solution) If you change the name of the 2nd table to make it unique it will revert to its original config.
