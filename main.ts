@@ -64,7 +64,10 @@ export default class BaseColumnWidthPlugin extends Plugin {
 								let initialData;
 								try {
 									// Parse the file content to extract column data
-									initialData = parseBaseFile(fileContent);
+									initialData = parseBaseFile(
+										getSelectedView(this.app.workspace),
+										fileContent
+									);
 								} catch (e) {
 									console.error(
 										"Failed to parse base file content:",
@@ -282,15 +285,14 @@ export class BaseColumnWidthModal extends Modal {
  * * @param content The entire file content as a single string.
  * @returns A Record (or a map) of column names to their integer sizes.
  */
-function parseBaseFile(content: string): Record<string, number> {
+function parseBaseFile(start: string, content: string): Record<string, number> {
 	// Split the entire file content into an array of individual lines.
 	const lines = content.split("\n");
 
-	// A flag to keep track of whether the parser is currently inside the 'columnSize' section.
-	// TODO: Make into a neutral flag
+	let isTable = false;
+	let inStart = false;
 	let inColumnSizeSection = false;
 
-	// An object to store the extracted column name and size pairs.
 	const columnSizes: Record<string, number> = {};
 
 	// Loop through each line of the file.
@@ -299,7 +301,7 @@ function parseBaseFile(content: string): Record<string, number> {
 		const trimmedLine = line.trim();
 
 		// Check if the current line is the start of the 'columnSize' section.
-		if (trimmedLine.startsWith("columnSize:")) {
+		if (inStart && trimmedLine.startsWith("columnSize:")) {
 			// Set the flag to true, so subsequent lines will be processed.
 			inColumnSizeSection = true;
 			// Move to the next line without processing this one.
@@ -310,15 +312,16 @@ function parseBaseFile(content: string): Record<string, number> {
 		if (inColumnSizeSection) {
 			// Check the indentation level of the current line.
 			// This is a common way to detect the end of a YAML block.
-			// TODO: Make regex detect empty space orr "- type:" as the end of the block
 			const leadingSpaces = line.match(/^\s*/)?.[0].length ?? 0;
 
 			// If the indentation returns to zero (and the line isn't empty),
 			// it signifies that the 'columnSize' section has ended.
-			if (leadingSpaces === 0 && trimmedLine !== "") {
-				// Set the flag to false to stop processing lines for this section.
+			// Check for an empty line OR a new block starting with "- " or a similar pattern
+			if (
+				(leadingSpaces === 0 && trimmedLine !== "") ||
+				trimmedLine.startsWith("- type:")
+			) {
 				inColumnSizeSection = false;
-				// Move to the next line.
 				continue;
 			}
 
@@ -336,6 +339,16 @@ function parseBaseFile(content: string): Record<string, number> {
 					columnSizes[key] = value;
 				}
 			}
+		}
+		if (isTable && trimmedLine.startsWith(`name: ${start}`)) {
+			inStart = true;
+			break;
+		} else {
+			isTable = false;
+		}
+		if (trimmedLine.startsWith("- type: table")) {
+			isTable = true;
+			continue;
 		}
 	}
 
