@@ -82,7 +82,8 @@ export default class BaseColumnWidthPlugin extends Plugin {
 								new BaseColumnWidthModal(
 									this.app,
 									file,
-									initialData
+									initialData,
+									getViewColumns(this.app.workspace)
 								).open();
 							});
 					});
@@ -202,13 +203,20 @@ class BaseColumnWidthSettingTab extends PluginSettingTab {
 
 export class BaseColumnWidthModal extends Modal {
 	file: TFile;
-	initialData: Record<string, number>; // Use a dynamic type for the column data
+	initialData: Record<string, number>;
+	allColumns: Record<string, number>;
 	result: Record<string, number>;
 
-	constructor(app: App, file: TFile, initialData: Record<string, number>) {
+	constructor(
+		app: App,
+		file: TFile,
+		initialData: Record<string, number>,
+		allColumns: Record<string, number>
+	) {
 		super(app);
 		this.file = file;
 		this.initialData = initialData;
+		this.allColumns = allColumns;
 		this.result = { ...initialData }; // Create a copy to edit
 	}
 
@@ -218,14 +226,18 @@ export class BaseColumnWidthModal extends Modal {
 			text: `Edit Column Sizes for ${this.file.name}`,
 		});
 
-		// Get the type and make sure that type is of "table"
-		// If "table", then get the "name:"
-		// Get the number of columns in the "order:" array
 		// Compare the number of columns in "order" to the number of entries in "columnSize"
-		// If columnSize does not exist, create it with default values as 150 from settings
-		// If columnSize exists, read the values and populate the modal with them
-		// If columnSize has fewer entries than order, add the missing ones with default values
-		// Display the column names and their sizes in the modal
+		const missingColumns = Object.keys(this.allColumns).filter(
+			(item) => !Object.keys(this.initialData).includes(item)
+		);
+		console.log(missingColumns);
+		console.log("Before:", this.initialData);
+		if (missingColumns.length > 0) {
+			missingColumns.forEach((item: string) => {
+				this.initialData[item] = 0;
+			});
+		}
+		console.log("After:", this.initialData);
 
 		// Iterate over the keys of the initial data object.
 		// This will create a setting for each column found in the file.
