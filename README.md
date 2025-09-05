@@ -99,4 +99,5 @@ See https://github.com/obsidianmd/obsidian-api
 
 -   Obsidian stores each view in an array without a unique identifier which makes it that the first of multiple identical tables will be modified.
 -   The controller object is vital for the program to detect which view is currently being used. It only appears when you make updates to the file.
-    -   UPDATE: I don't know why but the controller now always appear.
+    -   UPDATE 1: I don't know why but the controller now always appear.
+    -   UPDATE 2: This only happens when clicking the menu item on the file-menu. The editor-menu does not have this problem.
