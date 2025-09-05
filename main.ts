@@ -349,7 +349,6 @@ function getViewColumnSizes(
 	return columnSizes;
 }
 
-// Assuming this is in a utility file or within the same plugin file
 function updateColumnSizesInFile(
 	originalContent: string,
 	newSizes: Record<string, number>
@@ -357,29 +356,44 @@ function updateColumnSizesInFile(
 	const lines = originalContent.split("\n");
 	let outputLines: string[] = [];
 	let inColumnSizeSection = false;
+	console.log("Original Content:", originalContent);
+	console.log("New Sizes:", newSizes);
+
+	let isFinished = false;
 
 	for (const line of lines) {
+		if (
+			(inColumnSizeSection && line.trim().startsWith("- type:")) ||
+			line.trim() === ""
+		) {
+			isFinished = true;
+		}
+		if (isFinished) {
+			outputLines.push(line);
+			continue;
+		}
 		if (line.trim().startsWith("columnSize:")) {
-			// Found the start of the columnSize section
 			inColumnSizeSection = true;
 			outputLines.push(line); // Keep the 'columnSize:' line
 
 			// Now, add the new column sizes, each with an indentation.
+			// Adds the new columns sizes below the columnSizes line
 			for (const key in newSizes) {
 				// Use two spaces for indentation to match the original format
 				outputLines.push(`      ${key}: ${newSizes[key]}`);
 			}
+		} else if (inColumnSizeSection && !line.trim().startsWith("- type:")) {
+			continue;
 		} else if (inColumnSizeSection && line.trim() === "") {
+			// Adds the old column sizes below the new column sizes
 			// An empty line signals the end of the section
 			inColumnSizeSection = false;
 			outputLines.push(line);
-		} else if (inColumnSizeSection) {
-			// Skip the old lines in the columnSize section
-			continue;
 		} else {
 			// For all other lines, add them to the output
 			outputLines.push(line);
 		}
 	}
+	console.log("Output Lines:", outputLines);
 	return outputLines.join("\n");
 }
