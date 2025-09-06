@@ -134,6 +134,41 @@ export default class BaseColumnWidthPlugin extends Plugin {
 								}
 							});
 					});
+					menu.addItem((item) => {
+						item.setTitle("Distribute columns by custom value")
+							.setIcon("ruler")
+							.onClick(async () => {
+								// Get the file content
+								const fileContent = await this.app.vault.read(
+									file
+								);
+								let initialData;
+								try {
+									// Parse the file content to extract column data
+									initialData = getViewColumnSizes(
+										getSelectedView(this.app.workspace),
+										fileContent
+									);
+								} catch (e) {
+									console.error(
+										"Failed to parse base file content:",
+										e
+									);
+									new Notice(
+										"Error: Could not read file data. Check file format."
+									);
+									return;
+								}
+								// Open the modal with the initial data
+								new BaseCustomColumnWidthModal(
+									this.app,
+									file,
+									initialData,
+									getViewColumns(this.app.workspace),
+									150
+								).open();
+							});
+					});
 				}
 			})
 		);
@@ -328,6 +363,100 @@ export class BaseColumnWidthModal extends Modal {
 			originalContent,
 			this.initialData,
 			getSelectedView(this.app.workspace)
+		);
+
+		// 3. Write the complete, modified content back to the file
+		await this.app.vault.modify(this.file, updatedContent);
+
+		console.log("File saved successfully!");
+		new Notice("Column sizes updated successfully!");
+	}
+}
+export class BaseCustomColumnWidthModal extends Modal {
+	file: TFile;
+	initialData: Record<string, number>;
+	allColumns: Record<string, number>;
+	customWidth: number;
+
+	constructor(
+		app: App,
+		file: TFile,
+		initialData: Record<string, number>,
+		allColumns: Record<string, number>,
+		customWidth: number
+	) {
+		super(app);
+		this.file = file;
+		this.initialData = initialData;
+		this.allColumns = allColumns;
+		this.customWidth = customWidth;
+	}
+
+	onOpen() {
+		const { contentEl } = this;
+		contentEl.createEl("h2", {
+			text: `Edit Column Sizes for ${this.file.name}`,
+		});
+
+		// Compare the number of columns in "order" to the number of entries in "columnSize"
+		if (
+			Object.keys(this.allColumns).length >
+			Object.keys(this.initialData).length
+		) {
+			const missingColumns = Object.keys(this.allColumns).filter(
+				(item) => !Object.keys(this.initialData).includes(item)
+			);
+			missingColumns.forEach((item: string) => {
+				this.initialData[item] = 0;
+			});
+		}
+		if (
+			Object.keys(this.allColumns).length <
+			Object.keys(this.initialData).length
+		) {
+			const remainingColumns = Object.keys(this.initialData).filter(
+				(item) => !Object.keys(this.allColumns).includes(item)
+			);
+			for (const prop of remainingColumns) {
+				delete this.initialData[prop];
+			}
+		}
+
+		// Iterate over the keys of the initial data object.
+		// This will create a setting for each column found in the file.
+		new Setting(contentEl).setName("Custom width").addText((text) =>
+			text.setValue("0").onChange((value) => {
+				// Update the result object with the new value
+				this.customWidth = parseInt(value) || 0;
+			})
+		);
+
+		// Add a button to save changes
+		new Setting(contentEl).addButton((button) =>
+			button
+				.setCta()
+				.setButtonText("Save Changes")
+				.onClick(() => {
+					this.onSave();
+					this.close();
+				})
+		);
+	}
+
+	onClose() {
+		const { contentEl } = this;
+		contentEl.empty();
+	}
+
+	async onSave() {
+		const originalContent = await this.app.vault.read(this.file);
+
+		// 2. Use the serialization function to get the updated content
+		const updatedContent = distributeColumnsByValue(
+			originalContent,
+			this.initialData,
+			getSelectedView(this.app.workspace),
+			this.customWidth
 		);
 
 		// 3. Write the complete, modified content back to the file
@@ -550,6 +679,84 @@ function distributeColumnsToWindow(
 				for (const key in newSizes) {
 					outputLines.push(`      ${key}: ${distributedWidth}`);
 					console.log("Distributed Width 3:", distributedWidth);
+				}
+			}
+		}
+	}
+
+	console.log("Output Lines:", outputLines);
+	return outputLines.join("\n");
+}
+
+function distributeColumnsByValue(
+	originalContent: string,
+	newSizes: Record<string, number>,
+	viewName: string,
+	customWidth: number
+): string {
+	const lines = originalContent.split("\n");
+	let outputLines: string[] = [];
+	console.log("View Name:", `name: ${viewName}`);
+	console.log("Original Content:", originalContent);
+	console.log("New Sizes:", newSizes);
+
+	let inTable = false;
+	let inView = false;
+	let inSizes = false;
+	let sizesExist = false;
+	let isFinished = false;
+
+	for (let i = 0; i < lines.length; i++) {
+		const line = lines[i];
+		if (isFinished && line.trim().startsWith("- type: table")) {
+			inSizes = false;
+		}
+		if (!inSizes) {
+			outputLines.push(line);
+		}
+		// 1. Check type if "- type: table"
+		if (!isFinished && line.trim().startsWith("- type: table")) {
+			inTable = true;
+			continue;
+		}
+		// 2. Check name if name matches viewName
+		if (inTable) {
+			if (line.trim().startsWith(`name: ${viewName}`)) {
+				inView = true;
+			}
+			inTable = false;
+			continue;
+		}
+		// 3. Check "columnSize:"
+		if (inView && line.trim().startsWith("columnSize:")) {
+			sizesExist = true;
+			inSizes = true;
+			// 5. Continue and push "newSizes"
+			for (const key in newSizes) {
+				outputLines.push(`      ${key}: ${customWidth}`);
+			}
+			isFinished = true;
+		}
+
+		// 4. Handle if "columnSize:" does not exist at the end of the file.
+		if (!sizesExist && inView && i + 1 === lines.length - 1) {
+			const leadingSpaces = lines[i + 1].match(/^\s*/)?.[0].length ?? 0;
+			if (leadingSpaces === 0) {
+				sizesExist = true;
+				inView = false;
+				outputLines.push(`    columnSize:`);
+				for (const key in newSizes) {
+					outputLines.push(`      ${key}: ${customWidth}`);
+				}
+			}
+		}
+		if (!sizesExist && inView && i + 1 < lines.length) {
+			if (lines[i + 1].trim().startsWith("- type:")) {
+				sizesExist = true;
+				inView = false;
+				outputLines.push(`    columnSize:`);
+				for (const key in newSizes) {
+					outputLines.push(`      ${key}: ${customWidth}`);
 				}
 			}
 		}
