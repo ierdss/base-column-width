@@ -564,6 +564,7 @@ function updateColumnSizesInFile(
 		if (inView && line.trim().startsWith("columnSize:")) {
 			sizesExist = true;
 			inSizes = true;
+			inView = false;
 			// 5. Continue and push "newSizes"
 			for (const key in newSizes) {
 				outputLines.push(`      ${key}: ${newSizes[key]}`);
@@ -650,8 +651,9 @@ function distributeColumnsToWindow(
 		if (inView && line.trim().startsWith("columnSize:")) {
 			sizesExist = true;
 			inSizes = true;
+			inView = false;
 			// 5. Continue and push "newSizes"
-			for (const key in newSizes) {
+			for (const key in columns) {
 				outputLines.push(`      ${key}: ${distributedWidth}`);
 				console.log("Distributed Width 1:", distributedWidth);
 			}
@@ -665,7 +667,7 @@ function distributeColumnsToWindow(
 				sizesExist = true;
 				inView = false;
 				outputLines.push(`    columnSize:`);
-				for (const key in newSizes) {
+				for (const key in columns) {
 					outputLines.push(`      ${key}: ${distributedWidth}`);
 					console.log("Distributed Width 2:", distributedWidth);
 				}
@@ -676,7 +678,7 @@ function distributeColumnsToWindow(
 				sizesExist = true;
 				inView = false;
 				outputLines.push(`    columnSize:`);
-				for (const key in newSizes) {
+				for (const key in columns) {
 					outputLines.push(`      ${key}: ${distributedWidth}`);
 					console.log("Distributed Width 3:", distributedWidth);
 				}
@@ -731,6 +733,7 @@ function distributeColumnsByValue(
 		if (inView && line.trim().startsWith("columnSize:")) {
 			sizesExist = true;
 			inSizes = true;
+			inView = false;
 			// 5. Continue and push "newSizes"
 			for (const key in newSizes) {
 				outputLines.push(`      ${key}: ${customWidth}`);
