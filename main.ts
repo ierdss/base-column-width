@@ -103,12 +103,23 @@ export default class BaseColumnWidthPlugin extends Plugin {
 										fileContent
 									);
 									console.log(this.app.workspace);
-									distributeColumnsToWindow(
-										file.toString(),
-										initialData,
-										getSelectedView(this.app.workspace),
-										getViewColumns(this.app.workspace),
-										getWindowWidth(this.app.workspace)
+									const originalContent =
+										await this.app.vault.read(file);
+									const updatedContent =
+										distributeColumnsToWindow(
+											originalContent,
+											initialData,
+											getSelectedView(this.app.workspace),
+											getViewColumns(this.app.workspace),
+											getWindowWidth(this.app.workspace)
+										);
+									await this.app.vault.modify(
+										file,
+										updatedContent
+									);
+									console.log("File saved successfully!");
+									new Notice(
+										"Column sizes updated successfully!"
 									);
 									new Notice("Distributed Columns To Window");
 								} catch (e) {
@@ -473,11 +484,11 @@ function distributeColumnsToWindow(
 	console.log("New Sizes:", newSizes);
 	console.log("Columns:", columns);
 	console.log("Window Width:", windowWidth);
-	const distributedWidth = Math.floor(
+	const distributedWidth: number = Math.floor(
 		windowWidth / Object.keys(columns).length
 	);
 	console.log("Number Of Columns:", Object.keys(columns).length);
-	console.log(distributedWidth);
+	console.log("Distributed Width:", distributedWidth);
 
 	let inTable = false;
 	let inView = false;
@@ -512,7 +523,8 @@ function distributeColumnsToWindow(
 			inSizes = true;
 			// 5. Continue and push "newSizes"
 			for (const key in newSizes) {
-				outputLines.push(`      ${key}: ${newSizes[distributedWidth]}`);
+				outputLines.push(`      ${key}: ${distributedWidth}`);
+				console.log("Distributed Width 1:", distributedWidth);
 			}
 			isFinished = true;
 		}
@@ -525,9 +537,8 @@ function distributeColumnsToWindow(
 				inView = false;
 				outputLines.push(`    columnSize:`);
 				for (const key in newSizes) {
-					outputLines.push(
-						`      ${key}: ${newSizes[distributedWidth]}`
-					);
+					outputLines.push(`      ${key}: ${distributedWidth}`);
+					console.log("Distributed Width 2:", distributedWidth);
 				}
 			}
 		}
@@ -537,14 +548,13 @@ function distributeColumnsToWindow(
 				inView = false;
 				outputLines.push(`    columnSize:`);
 				for (const key in newSizes) {
-					outputLines.push(
-						`      ${key}: ${newSizes[distributedWidth]}`
-					);
+					outputLines.push(`      ${key}: ${distributedWidth}`);
+					console.log("Distributed Width 3:", distributedWidth);
 				}
 			}
 		}
 	}
 
-	// console.log("Output Lines:", outputLines);
+	console.log("Output Lines:", outputLines);
 	return outputLines.join("\n");
 }
