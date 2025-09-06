@@ -12,6 +12,7 @@ import {
 } from "obsidian";
 import getSelectedView from "utility/getSelectedView";
 import getViewColumns from "utility/getViewColumns";
+import getWindowWidth from "utility/getWindowWidth";
 
 interface BaseColumnWidthSettings {
 	minColumnWidth: number;
@@ -54,7 +55,7 @@ export default class BaseColumnWidthPlugin extends Plugin {
 				// Only add the menu item for .base files
 				if (file.extension === "base") {
 					menu.addItem((item) => {
-						item.setTitle("Edit Column Sizes")
+						item.setTitle("Edit column sizes")
 							.setIcon("ruler")
 							.onClick(async () => {
 								// Get the file content
@@ -88,10 +89,38 @@ export default class BaseColumnWidthPlugin extends Plugin {
 							});
 					});
 					menu.addItem((item) => {
-						item.setTitle("Distribute Column Sizes")
+						item.setTitle("Distribute columns in window")
 							.setIcon("ruler")
 							.onClick(async () => {
-								new Notice("Distributed Columns");
+								const fileContent = await this.app.vault.read(
+									file
+								);
+								let initialData;
+								try {
+									// Parse the file content to extract column data
+									initialData = getViewColumnSizes(
+										getSelectedView(this.app.workspace),
+										fileContent
+									);
+									console.log(this.app.workspace);
+									distributeColumnsToWindow(
+										file.toString(),
+										initialData,
+										getSelectedView(this.app.workspace),
+										getViewColumns(this.app.workspace),
+										getWindowWidth(this.app.workspace)
+									);
+									new Notice("Distributed Columns To Window");
+								} catch (e) {
+									console.error(
+										"Failed to parse base file content:",
+										e
+									);
+									new Notice(
+										"Error: Could not read file data. Check file format."
+									);
+									return;
+								}
 							});
 					});
 				}
@@ -427,5 +456,95 @@ function updateColumnSizesInFile(
 	}
 
 	console.log("Output Lines:", outputLines);
+	return outputLines.join("\n");
+}
+
+function distributeColumnsToWindow(
+	originalContent: string,
+	newSizes: Record<string, number>,
+	viewName: string,
+	columns: Record<string, number>,
+	windowWidth: number
+): string {
+	const lines = originalContent.split("\n");
+	let outputLines: string[] = [];
+	console.log("View Name:", `name: ${viewName}`);
+	console.log("Original Content:", originalContent);
+	console.log("New Sizes:", newSizes);
+	console.log("Columns:", columns);
+	console.log("Window Width:", windowWidth);
+	const distributedWidth = Math.floor(
+		windowWidth / Object.keys(columns).length
+	);
+	console.log("Number Of Columns:", Object.keys(columns).length);
+	console.log(distributedWidth);
+
+	let inTable = false;
+	let inView = false;
+	let inSizes = false;
+	let sizesExist = false;
+	let isFinished = false;
+
+	for (let i = 0; i < lines.length; i++) {
+		const line = lines[i];
+		if (isFinished && line.trim().startsWith("- type: table")) {
+			inSizes = false;
+		}
+		if (!inSizes) {
+			outputLines.push(line);
+		}
+		// 1. Check type if "- type: table"
+		if (!isFinished && line.trim().startsWith("- type: table")) {
+			inTable = true;
+			continue;
+		}
+		// 2. Check name if name matches viewName
+		if (inTable) {
+			if (line.trim().startsWith(`name: ${viewName}`)) {
+				inView = true;
+			}
+			inTable = false;
+			continue;
+		}
+		// 3. Check "columnSize:"
+		if (inView && line.trim().startsWith("columnSize:")) {
+			sizesExist = true;
+			inSizes = true;
+			// 5. Continue and push "newSizes"
+			for (const key in newSizes) {
+				outputLines.push(`      ${key}: ${newSizes[distributedWidth]}`);
+			}
+			isFinished = true;
+		}
+
+		// 4. Handle if "columnSize:" does not exist at the end of the file.
+		if (!sizesExist && inView && i + 1 === lines.length - 1) {
+			const leadingSpaces = lines[i + 1].match(/^\s*/)?.[0].length ?? 0;
+			if (leadingSpaces === 0) {
+				sizesExist = true;
+				inView = false;
+				outputLines.push(`    columnSize:`);
+				for (const key in newSizes) {
+					outputLines.push(
+						`      ${key}: ${newSizes[distributedWidth]}`
+					);
+				}
+			}
+		}
+		if (!sizesExist && inView && i + 1 < lines.length) {
+			if (lines[i + 1].trim().startsWith("- type:")) {
+				sizesExist = true;
+				inView = false;
+				outputLines.push(`    columnSize:`);
+				for (const key in newSizes) {
+					outputLines.push(
+						`      ${key}: ${newSizes[distributedWidth]}`
+					);
+				}
+			}
+		}
+	}
+
+	// console.log("Output Lines:", outputLines);
 	return outputLines.join("\n");
 }
