@@ -405,8 +405,15 @@ function updateColumnSizesInFile(
 		// 4. Handle if "columnSize:" does not exist at the end of the file.
 		if (!sizesExists && i + 1 < lines.length) {
 			const leadingSpaces = lines[i + 1].match(/^\s*/)?.[0].length ?? 0;
-			console.log("Leading Spaces:", leadingSpaces);
 			if (leadingSpaces === 0) {
+				outputLines.push(`    columnSize:`);
+				for (const key in newSizes) {
+					outputLines.push(`      ${key}: ${newSizes[key]}`);
+				}
+			}
+		}
+		if (!sizesExists && inView) {
+			if (lines[i + 1].trim().startsWith("- type:")) {
 				outputLines.push(`    columnSize:`);
 				for (const key in newSizes) {
 					outputLines.push(`      ${key}: ${newSizes[key]}`);
