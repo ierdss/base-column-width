@@ -367,7 +367,7 @@ function updateColumnSizesInFile(
 	let inTable = false;
 	let inView = false;
 	let inSizes = false;
-	let sizesExists = false;
+	let sizesExist = false;
 	let isFinished = false;
 
 	for (let i = 0; i < lines.length; i++) {
@@ -393,7 +393,7 @@ function updateColumnSizesInFile(
 		}
 		// 3. Check "columnSize:"
 		if (inView && line.trim().startsWith("columnSize:")) {
-			sizesExists = true;
+			sizesExist = true;
 			inSizes = true;
 			// 5. Continue and push "newSizes"
 			for (const key in newSizes) {
@@ -403,17 +403,21 @@ function updateColumnSizesInFile(
 		}
 
 		// 4. Handle if "columnSize:" does not exist at the end of the file.
-		if (!sizesExists && i + 1 < lines.length) {
+		if (!sizesExist && inView && i + 1 === lines.length - 1) {
 			const leadingSpaces = lines[i + 1].match(/^\s*/)?.[0].length ?? 0;
 			if (leadingSpaces === 0) {
+				sizesExist = true;
+				inView = false;
 				outputLines.push(`    columnSize:`);
 				for (const key in newSizes) {
 					outputLines.push(`      ${key}: ${newSizes[key]}`);
 				}
 			}
 		}
-		if (!sizesExists && inView) {
+		if (!sizesExist && inView && i + 1 < lines.length) {
 			if (lines[i + 1].trim().startsWith("- type:")) {
+				sizesExist = true;
+				inView = false;
 				outputLines.push(`    columnSize:`);
 				for (const key in newSizes) {
 					outputLines.push(`      ${key}: ${newSizes[key]}`);
