@@ -370,6 +370,9 @@ function updateColumnSizesInFile(
 	let isFinished = false;
 
 	for (const line of lines) {
+		if (isFinished && line.trim().startsWith("- type: table")) {
+			inSizes = false;
+		}
 		if (!inSizes) {
 			outputLines.push(line);
 		}
@@ -380,7 +383,7 @@ function updateColumnSizesInFile(
 		}
 		// 2. Check name if name matches viewName
 		if (inTable) {
-			if (line.trim().endsWith(viewName)) {
+			if (line.trim().startsWith(`name: ${viewName}`)) {
 				inView = true;
 			}
 			inTable = false;
