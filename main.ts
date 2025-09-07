@@ -31,7 +31,7 @@ export default class BaseColumnWidthPlugin extends Plugin {
 		await this.loadSettings();
 
 		// Adds a settings tab under "Community Plugins"
-		this.addSettingTab(new BaseColumnWidthSettingTab(this.app, this));
+		// this.addSettingTab(new BaseColumnWidthSettingTab(this.app, this));
 
 		// Add a ribbon icon to the left sidebar for debugging
 		this.addRibbonIcon("code-xml", "Get Selected View", (event) => {
