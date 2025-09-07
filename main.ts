@@ -33,13 +33,6 @@ export default class BaseColumnWidthPlugin extends Plugin {
 		// Adds a settings tab under "Community Plugins"
 		// this.addSettingTab(new BaseColumnWidthSettingTab(this.app, this));
 
-		this.addRibbonIcon("code-xml", "Get Selected View", (event) => {
-			const output = getSelectedView(this.app.workspace);
-		});
-		this.addRibbonIcon("code-xml", "Get View Columns", (event) => {
-			const output = getViewColumns(this.app.workspace);
-		});
-
 		this.registerEvent(
 			this.app.workspace.on("file-menu", (menu, file: TFile) => {
 				// Only add the menu item for .base files
