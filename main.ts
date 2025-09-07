@@ -427,7 +427,6 @@ export class BaseCustomColumnWidthModal extends Modal {
 	async onSave() {
 		const originalContent = await this.app.vault.read(this.file);
 
-		// 2. Use the serialization function to get the updated content
 		const updatedContent = distributeColumnsByValue(
 			originalContent,
 			this.initialData,
@@ -435,11 +434,240 @@ export class BaseCustomColumnWidthModal extends Modal {
 			this.customWidth
 		);
 
-		// 3. Write the complete, modified content back to the file
 		await this.app.vault.modify(this.file, updatedContent);
 
 		new Notice("Column sizes updated successfully!");
 	}
+}
+
+// Core functions
+function updateColumnSizesInFile(
+	originalContent: string,
+	newSizes: Record<string, number>,
+	viewName: string
+): string {
+	const lines = originalContent.split("\n");
+	let outputLines: string[] = [];
+	let inTable = false;
+	let inView = false;
+	let inSizes = false;
+	let sizesExist = false;
+	let isFinished = false;
+
+	for (let i = 0; i < lines.length; i++) {
+		const line = lines[i];
+		if (isFinished && line.trim().startsWith("- type: table")) {
+			inSizes = false;
+		}
+		if (!inSizes) {
+			outputLines.push(line);
+		}
+		if (!isFinished && line.trim().startsWith("- type: table")) {
+			inTable = true;
+			continue;
+		}
+		if (inTable) {
+			if (line.trim().startsWith(`name: ${viewName}`)) {
+				inView = true;
+			}
+			inTable = false;
+			continue;
+		}
+		if (inView && line.trim().startsWith("columnSize:")) {
+			sizesExist = true;
+			inSizes = true;
+			inView = false;
+			for (const key in newSizes) {
+				outputLines.push(`      ${key}: ${newSizes[key]}`);
+			}
+			isFinished = true;
+		}
+		if (!sizesExist && inView && i + 1 === lines.length - 1) {
+			const leadingSpaces = lines[i + 1].match(/^\s*/)?.[0].length ?? 0;
+			if (leadingSpaces === 0) {
+				sizesExist = true;
+				inView = false;
+				outputLines.push(`    columnSize:`);
+				for (const key in newSizes) {
+					outputLines.push(`      ${key}: ${newSizes[key]}`);
+				}
+			}
+		}
+		if (!sizesExist && inView && i + 1 < lines.length) {
+			if (lines[i + 1].trim().startsWith("- type:")) {
+				sizesExist = true;
+				inView = false;
+				outputLines.push(`    columnSize:`);
+				for (const key in newSizes) {
+					outputLines.push(`      ${key}: ${newSizes[key]}`);
+				}
+			}
+		}
+	}
+
+	return outputLines.join("\n");
+}
+
+function distributeColumnsToWindow(
+	originalContent: string,
+	newSizes: Record<string, number>,
+	viewName: string,
+	columns: Record<string, number>,
+	windowWidth: number
+): string {
+	const lines = originalContent.split("\n");
+	let outputLines: string[] = [];
+	const distributedWidth: number = Math.floor(
+		windowWidth / Object.keys(columns).length
+	);
+
+	let inTable = false;
+	let inView = false;
+	let inSizes = false;
+	let sizesExist = false;
+	let isFinished = false;
+
+	for (let i = 0; i < lines.length; i++) {
+		const line = lines[i];
+		if (isFinished && line.trim().startsWith("- type: table")) {
+			inSizes = false;
+		}
+		if (!inSizes) {
+			outputLines.push(line);
+		}
+		if (!isFinished && line.trim().startsWith("- type: table")) {
+			inTable = true;
+			continue;
+		}
+		if (inTable) {
+			if (line.trim().startsWith(`name: ${viewName}`)) {
+				inView = true;
+			}
+			inTable = false;
+			continue;
+		}
+		if (inView && line.trim().startsWith("columnSize:")) {
+			sizesExist = true;
+			inSizes = true;
+			inView = false;
+			for (const key in columns) {
+				outputLines.push(`      ${key}: ${distributedWidth}`);
+			}
+			isFinished = true;
+		}
+		if (!sizesExist && inView && i + 1 === lines.length - 1) {
+			const leadingSpaces = lines[i + 1].match(/^\s*/)?.[0].length ?? 0;
+			if (leadingSpaces === 0) {
+				sizesExist = true;
+				inView = false;
+				outputLines.push(`    columnSize:`);
+				for (const key in columns) {
+					outputLines.push(`      ${key}: ${distributedWidth}`);
+				}
+			}
+		}
+		if (!sizesExist && inView && i + 1 < lines.length) {
+			if (lines[i + 1].trim().startsWith("- type:")) {
+				sizesExist = true;
+				inView = false;
+				outputLines.push(`    columnSize:`);
+				for (const key in columns) {
+					outputLines.push(`      ${key}: ${distributedWidth}`);
+				}
+			}
+		}
+	}
+
+	return outputLines.join("\n");
+}
+
+function distributeColumnsByValue(
+	originalContent: string,
+	newSizes: Record<string, number>,
+	viewName: string,
+	customWidth: number
+): string {
+	const lines = originalContent.split("\n");
+	let outputLines: string[] = [];
+	let inTable = false;
+	let inView = false;
+	let inSizes = false;
+	let sizesExist = false;
+	let isFinished = false;
+
+	for (let i = 0; i < lines.length; i++) {
+		const line = lines[i];
+		if (isFinished && line.trim().startsWith("- type: table")) {
+			inSizes = false;
+		}
+		if (!inSizes) {
+			outputLines.push(line);
+		}
+		if (!isFinished && line.trim().startsWith("- type: table")) {
+			inTable = true;
+			continue;
+		}
+		if (inTable) {
+			if (line.trim().startsWith(`name: ${viewName}`)) {
+				inView = true;
+			}
+			inTable = false;
+			continue;
+		}
+		if (inView && line.trim().startsWith("columnSize:")) {
+			sizesExist = true;
+			inSizes = true;
+			inView = false;
+			for (const key in newSizes) {
+				outputLines.push(`      ${key}: ${customWidth}`);
+			}
+			isFinished = true;
+		}
+		if (!sizesExist && inView && i + 1 === lines.length - 1) {
+			const leadingSpaces = lines[i + 1].match(/^\s*/)?.[0].length ?? 0;
+			if (leadingSpaces === 0) {
+				sizesExist = true;
+				inView = false;
+				outputLines.push(`    columnSize:`);
+				for (const key in newSizes) {
+					outputLines.push(`      ${key}: ${customWidth}`);
+				}
+			}
+		}
+		if (!sizesExist && inView && i + 1 < lines.length) {
+			if (lines[i + 1].trim().startsWith("- type:")) {
+				sizesExist = true;
+				inView = false;
+				outputLines.push(`    columnSize:`);
+				for (const key in newSizes) {
+					outputLines.push(`      ${key}: ${customWidth}`);
+				}
+			}
+		}
+	}
+
+	return outputLines.join("\n");
+}
+
+// Utitlities
+export function getSelectedView(activeView: any) {
+	const activeLeaf = activeView.activeLeaf.view.controller.viewName;
+	return activeLeaf;
+}
+
+export function getViewColumns(activeView: any) {
+	const columnsArr =
+		activeView.activeLeaf.view.controller.view.data.config.order;
+	const allColumns: Record<string, number> = {};
+	columnsArr.forEach((item: string) => {
+		allColumns[item] = 0;
+	});
+	return allColumns;
+}
+
+export function getWindowWidth(activeView: any) {
+	const width = activeView.activeLeaf.width;
+	return width;
 }
 
 function getViewColumnSizes(
@@ -495,251 +723,4 @@ function getViewColumnSizes(
 	}
 
 	return columnSizes;
-}
-
-function updateColumnSizesInFile(
-	originalContent: string,
-	newSizes: Record<string, number>,
-	viewName: string
-): string {
-	const lines = originalContent.split("\n");
-	let outputLines: string[] = [];
-	let inTable = false;
-	let inView = false;
-	let inSizes = false;
-	let sizesExist = false;
-	let isFinished = false;
-
-	for (let i = 0; i < lines.length; i++) {
-		const line = lines[i];
-		if (isFinished && line.trim().startsWith("- type: table")) {
-			inSizes = false;
-		}
-		if (!inSizes) {
-			outputLines.push(line);
-		}
-		// 1. Check type if "- type: table"
-		if (!isFinished && line.trim().startsWith("- type: table")) {
-			inTable = true;
-			continue;
-		}
-		// 2. Check name if name matches viewName
-		if (inTable) {
-			if (line.trim().startsWith(`name: ${viewName}`)) {
-				inView = true;
-			}
-			inTable = false;
-			continue;
-		}
-		// 3. Check "columnSize:"
-		if (inView && line.trim().startsWith("columnSize:")) {
-			sizesExist = true;
-			inSizes = true;
-			inView = false;
-			// 5. Continue and push "newSizes"
-			for (const key in newSizes) {
-				outputLines.push(`      ${key}: ${newSizes[key]}`);
-			}
-			isFinished = true;
-		}
-
-		// 4. Handle if "columnSize:" does not exist at the end of the file.
-		if (!sizesExist && inView && i + 1 === lines.length - 1) {
-			const leadingSpaces = lines[i + 1].match(/^\s*/)?.[0].length ?? 0;
-			if (leadingSpaces === 0) {
-				sizesExist = true;
-				inView = false;
-				outputLines.push(`    columnSize:`);
-				for (const key in newSizes) {
-					outputLines.push(`      ${key}: ${newSizes[key]}`);
-				}
-			}
-		}
-		if (!sizesExist && inView && i + 1 < lines.length) {
-			if (lines[i + 1].trim().startsWith("- type:")) {
-				sizesExist = true;
-				inView = false;
-				outputLines.push(`    columnSize:`);
-				for (const key in newSizes) {
-					outputLines.push(`      ${key}: ${newSizes[key]}`);
-				}
-			}
-		}
-	}
-
-	return outputLines.join("\n");
-}
-
-function distributeColumnsToWindow(
-	originalContent: string,
-	newSizes: Record<string, number>,
-	viewName: string,
-	columns: Record<string, number>,
-	windowWidth: number
-): string {
-	const lines = originalContent.split("\n");
-	let outputLines: string[] = [];
-	const distributedWidth: number = Math.floor(
-		windowWidth / Object.keys(columns).length
-	);
-
-	let inTable = false;
-	let inView = false;
-	let inSizes = false;
-	let sizesExist = false;
-	let isFinished = false;
-
-	for (let i = 0; i < lines.length; i++) {
-		const line = lines[i];
-		if (isFinished && line.trim().startsWith("- type: table")) {
-			inSizes = false;
-		}
-		if (!inSizes) {
-			outputLines.push(line);
-		}
-		// 1. Check type if "- type: table"
-		if (!isFinished && line.trim().startsWith("- type: table")) {
-			inTable = true;
-			continue;
-		}
-		// 2. Check name if name matches viewName
-		if (inTable) {
-			if (line.trim().startsWith(`name: ${viewName}`)) {
-				inView = true;
-			}
-			inTable = false;
-			continue;
-		}
-		// 3. Check "columnSize:"
-		if (inView && line.trim().startsWith("columnSize:")) {
-			sizesExist = true;
-			inSizes = true;
-			inView = false;
-			// 5. Continue and push "newSizes"
-			for (const key in columns) {
-				outputLines.push(`      ${key}: ${distributedWidth}`);
-			}
-			isFinished = true;
-		}
-
-		// 4. Handle if "columnSize:" does not exist at the end of the file.
-		if (!sizesExist && inView && i + 1 === lines.length - 1) {
-			const leadingSpaces = lines[i + 1].match(/^\s*/)?.[0].length ?? 0;
-			if (leadingSpaces === 0) {
-				sizesExist = true;
-				inView = false;
-				outputLines.push(`    columnSize:`);
-				for (const key in columns) {
-					outputLines.push(`      ${key}: ${distributedWidth}`);
-				}
-			}
-		}
-		if (!sizesExist && inView && i + 1 < lines.length) {
-			if (lines[i + 1].trim().startsWith("- type:")) {
-				sizesExist = true;
-				inView = false;
-				outputLines.push(`    columnSize:`);
-				for (const key in columns) {
-					outputLines.push(`      ${key}: ${distributedWidth}`);
-				}
-			}
-		}
-	}
-
-	return outputLines.join("\n");
-}
-
-function distributeColumnsByValue(
-	originalContent: string,
-	newSizes: Record<string, number>,
-	viewName: string,
-	customWidth: number
-): string {
-	const lines = originalContent.split("\n");
-	let outputLines: string[] = [];
-	let inTable = false;
-	let inView = false;
-	let inSizes = false;
-	let sizesExist = false;
-	let isFinished = false;
-
-	for (let i = 0; i < lines.length; i++) {
-		const line = lines[i];
-		if (isFinished && line.trim().startsWith("- type: table")) {
-			inSizes = false;
-		}
-		if (!inSizes) {
-			outputLines.push(line);
-		}
-		// 1. Check type if "- type: table"
-		if (!isFinished && line.trim().startsWith("- type: table")) {
-			inTable = true;
-			continue;
-		}
-		// 2. Check name if name matches viewName
-		if (inTable) {
-			if (line.trim().startsWith(`name: ${viewName}`)) {
-				inView = true;
-			}
-			inTable = false;
-			continue;
-		}
-		// 3. Check "columnSize:"
-		if (inView && line.trim().startsWith("columnSize:")) {
-			sizesExist = true;
-			inSizes = true;
-			inView = false;
-			// 5. Continue and push "newSizes"
-			for (const key in newSizes) {
-				outputLines.push(`      ${key}: ${customWidth}`);
-			}
-			isFinished = true;
-		}
-
-		// 4. Handle if "columnSize:" does not exist at the end of the file.
-		if (!sizesExist && inView && i + 1 === lines.length - 1) {
-			const leadingSpaces = lines[i + 1].match(/^\s*/)?.[0].length ?? 0;
-			if (leadingSpaces === 0) {
-				sizesExist = true;
-				inView = false;
-				outputLines.push(`    columnSize:`);
-				for (const key in newSizes) {
-					outputLines.push(`      ${key}: ${customWidth}`);
-				}
-			}
-		}
-		if (!sizesExist && inView && i + 1 < lines.length) {
-			if (lines[i + 1].trim().startsWith("- type:")) {
-				sizesExist = true;
-				inView = false;
-				outputLines.push(`    columnSize:`);
-				for (const key in newSizes) {
-					outputLines.push(`      ${key}: ${customWidth}`);
-				}
-			}
-		}
-	}
-
-	return outputLines.join("\n");
-}
-
-// Utitlities
-export function getSelectedView(activeView: any) {
-	const activeLeaf = activeView.activeLeaf.view.controller.viewName;
-	return activeLeaf;
-}
-
-export function getViewColumns(activeView: any) {
-	const columnsArr =
-		activeView.activeLeaf.view.controller.view.data.config.order;
-	const allColumns: Record<string, number> = {};
-	columnsArr.forEach((item: string) => {
-		allColumns[item] = 0;
-	});
-	return allColumns;
-}
-
-export function getWindowWidth(activeView: any) {
-	const width = activeView.activeLeaf.width;
-	return width;
 }
