@@ -33,17 +33,13 @@ export default class BaseColumnWidthPlugin extends Plugin {
 		// Adds a settings tab under "Community Plugins"
 		// this.addSettingTab(new BaseColumnWidthSettingTab(this.app, this));
 
-		// Add a ribbon icon to the left sidebar for debugging
 		this.addRibbonIcon("code-xml", "Get Selected View", (event) => {
 			const output = getSelectedView(this.app.workspace);
-			console.log("View Name:", output);
 		});
 		this.addRibbonIcon("code-xml", "Get View Columns", (event) => {
 			const output = getViewColumns(this.app.workspace);
-			console.log("View Columns:", output);
 		});
 
-		// Adds a button on the "file-menu" and "editor-menu"
 		this.registerEvent(
 			this.app.workspace.on("file-menu", (menu, file: TFile) => {
 				// Only add the menu item for .base files
@@ -96,7 +92,6 @@ export default class BaseColumnWidthPlugin extends Plugin {
 										getSelectedView(this.app.workspace),
 										fileContent
 									);
-									console.log(this.app.workspace);
 									const originalContent =
 										await this.app.vault.read(file);
 									const updatedContent =
@@ -111,11 +106,7 @@ export default class BaseColumnWidthPlugin extends Plugin {
 										file,
 										updatedContent
 									);
-									console.log("File saved successfully!");
-									new Notice(
-										"Column sizes updated successfully!"
-									);
-									new Notice("Distributed Columns To Window");
+									new Notice("Distributed columns");
 								} catch (e) {
 									console.error(
 										"Failed to parse base file content:",
@@ -362,8 +353,7 @@ export class BaseColumnWidthModal extends Modal {
 		// 3. Write the complete, modified content back to the file
 		await this.app.vault.modify(this.file, updatedContent);
 
-		console.log("File saved successfully!");
-		new Notice("Column sizes updated successfully!");
+		new Notice("Edited columns");
 	}
 }
 export class BaseCustomColumnWidthModal extends Modal {
@@ -456,7 +446,6 @@ export class BaseCustomColumnWidthModal extends Modal {
 		// 3. Write the complete, modified content back to the file
 		await this.app.vault.modify(this.file, updatedContent);
 
-		console.log("File saved successfully!");
 		new Notice("Column sizes updated successfully!");
 	}
 }
@@ -523,10 +512,6 @@ function updateColumnSizesInFile(
 ): string {
 	const lines = originalContent.split("\n");
 	let outputLines: string[] = [];
-	console.log("View Name:", `name: ${viewName}`);
-	console.log("Original Content:", originalContent);
-	console.log("New Sizes:", newSizes);
-
 	let inTable = false;
 	let inView = false;
 	let inSizes = false;
@@ -590,7 +575,6 @@ function updateColumnSizesInFile(
 		}
 	}
 
-	console.log("Output Lines:", outputLines);
 	return outputLines.join("\n");
 }
 
@@ -603,16 +587,9 @@ function distributeColumnsToWindow(
 ): string {
 	const lines = originalContent.split("\n");
 	let outputLines: string[] = [];
-	console.log("View Name:", `name: ${viewName}`);
-	console.log("Original Content:", originalContent);
-	console.log("New Sizes:", newSizes);
-	console.log("Columns:", columns);
-	console.log("Window Width:", windowWidth);
 	const distributedWidth: number = Math.floor(
 		windowWidth / Object.keys(columns).length
 	);
-	console.log("Number Of Columns:", Object.keys(columns).length);
-	console.log("Distributed Width:", distributedWidth);
 
 	let inTable = false;
 	let inView = false;
@@ -649,7 +626,6 @@ function distributeColumnsToWindow(
 			// 5. Continue and push "newSizes"
 			for (const key in columns) {
 				outputLines.push(`      ${key}: ${distributedWidth}`);
-				console.log("Distributed Width 1:", distributedWidth);
 			}
 			isFinished = true;
 		}
@@ -663,7 +639,6 @@ function distributeColumnsToWindow(
 				outputLines.push(`    columnSize:`);
 				for (const key in columns) {
 					outputLines.push(`      ${key}: ${distributedWidth}`);
-					console.log("Distributed Width 2:", distributedWidth);
 				}
 			}
 		}
@@ -674,13 +649,11 @@ function distributeColumnsToWindow(
 				outputLines.push(`    columnSize:`);
 				for (const key in columns) {
 					outputLines.push(`      ${key}: ${distributedWidth}`);
-					console.log("Distributed Width 3:", distributedWidth);
 				}
 			}
 		}
 	}
 
-	console.log("Output Lines:", outputLines);
 	return outputLines.join("\n");
 }
 
@@ -692,10 +665,6 @@ function distributeColumnsByValue(
 ): string {
 	const lines = originalContent.split("\n");
 	let outputLines: string[] = [];
-	console.log("View Name:", `name: ${viewName}`);
-	console.log("Original Content:", originalContent);
-	console.log("New Sizes:", newSizes);
-
 	let inTable = false;
 	let inView = false;
 	let inSizes = false;
@@ -759,7 +728,6 @@ function distributeColumnsByValue(
 		}
 	}
 
-	console.log("Output Lines:", outputLines);
 	return outputLines.join("\n");
 }
 
