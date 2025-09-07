@@ -259,7 +259,6 @@ class BaseColumnWidthSettingTab extends PluginSettingTab {
 }
 
 // Plugin functions
-//
 
 export class BaseColumnWidthModal extends Modal {
 	file: TFile;
