@@ -1,8 +1,6 @@
 ## Description
 
-Customize the column sizes of your Obsidian Bases.
-
-This ignores the minimum and maximum width of a column.
+Customize the column sizes of your Obsidian Bases. You can only customize a base file. The columns you resized affect embedded Bases.
 
 ## Functions
 
