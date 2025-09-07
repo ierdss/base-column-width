@@ -95,9 +95,9 @@ export default class BaseColumnWidthPlugin extends Plugin {
 											getViewColumns(this.app.workspace),
 											getWindowWidth(this.app.workspace)
 										);
-									await this.app.vault.modify(
+									await this.app.vault.process(
 										file,
-										updatedContent
+										() => updatedContent
 									);
 									new Notice("Distributed columns");
 								} catch (e) {
@@ -343,7 +343,7 @@ export class BaseColumnWidthModal extends Modal {
 		);
 
 		// 3. Write the complete, modified content back to the file
-		await this.app.vault.modify(this.file, updatedContent);
+		await this.app.vault.process(this.file, () => updatedContent);
 
 		new Notice("Edited columns");
 	}
@@ -434,7 +434,7 @@ export class BaseCustomColumnWidthModal extends Modal {
 			this.customWidth
 		);
 
-		await this.app.vault.modify(this.file, updatedContent);
+		await this.app.vault.process(this.file, () => updatedContent);
 
 		new Notice("Column sizes updated successfully!");
 	}
