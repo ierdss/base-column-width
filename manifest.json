@@ -3,7 +3,7 @@
 	"name": "Base Column Width",
 	"version": "1.0.0",
 	"minAppVersion": "1.9.10",
-	"description": "Set the base column width to fit content or a custom width using pixels.",
+	"description": " Customize the sizes of the columns of your Obsidian Bases.",
 	"author": "Andrei Sager (@ierdss)",
 	"authorUrl": "https://github.com/ierdss",
 	"fundingUrl": "",
