@@ -47,8 +47,12 @@ export default class BaseColumnWidthPlugin extends Plugin {
 								);
 							console.log("View:", view);
 							console.log(
-								"New Function:",
+								"View Title:",
 								getSelectedView(this.app.workspace)
+							);
+							console.log(
+								"Window Width:",
+								getWindowWidth(this.app.workspace)
 							);
 						});
 				});
@@ -673,8 +677,8 @@ export function getSelectedView(activeView: any) {
 }
 
 export function getViewColumns(activeView: any) {
-	const columnsArr =
-		activeView.activeLeaf.view.controller.view.data.config.order;
+	const view = activeView.getActiveViewOfType(FileView);
+	const columnsArr = view.controller.view.data.config.order;
 	const allColumns: Record<string, number> = {};
 	columnsArr.forEach((item: string) => {
 		allColumns[item] = 0;
@@ -683,7 +687,8 @@ export function getViewColumns(activeView: any) {
 }
 
 export function getWindowWidth(activeView: any) {
-	const width = activeView.activeLeaf.width;
+	const view = activeView.getActiveViewOfType(FileView);
+	const width = view.headerEl.clientWidth;
 	return width;
 }
 
