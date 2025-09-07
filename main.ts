@@ -476,7 +476,11 @@ function updateColumnSizesInFile(
 
 	for (let i = 0; i < lines.length; i++) {
 		const line = lines[i];
-		if (isFinished && line.trim().startsWith("- type: table")) {
+		if (
+			isFinished &&
+			(line.trim().startsWith("- type:") ||
+				line.trim().startsWith("rowHeight:"))
+		) {
 			inSizes = false;
 		}
 		if (!inSizes) {
@@ -511,16 +515,21 @@ function updateColumnSizesInFile(
 				for (const key in newSizes) {
 					outputLines.push(`      ${key}: ${newSizes[key]}`);
 				}
+				isFinished = true;
 			}
 		}
 		if (!sizesExist && inView && i + 1 < lines.length) {
-			if (lines[i + 1].trim().startsWith("- type:")) {
+			if (
+				lines[i + 1].trim().startsWith("- type:") ||
+				lines[i + 1].trim().startsWith("rowHeight:")
+			) {
 				sizesExist = true;
 				inView = false;
 				outputLines.push(`    columnSize:`);
 				for (const key in newSizes) {
 					outputLines.push(`      ${key}: ${newSizes[key]}`);
 				}
+				isFinished = true;
 			}
 		}
 	}
@@ -549,7 +558,11 @@ function distributeColumnsToWindow(
 
 	for (let i = 0; i < lines.length; i++) {
 		const line = lines[i];
-		if (isFinished && line.trim().startsWith("- type: table")) {
+		if (
+			isFinished &&
+			(line.trim().startsWith("- type:") ||
+				line.trim().startsWith("rowHeight:"))
+		) {
 			inSizes = false;
 		}
 		if (!inSizes) {
@@ -584,16 +597,21 @@ function distributeColumnsToWindow(
 				for (const key in columns) {
 					outputLines.push(`      ${key}: ${distributedWidth}`);
 				}
+				isFinished = true;
 			}
 		}
 		if (!sizesExist && inView && i + 1 < lines.length) {
-			if (lines[i + 1].trim().startsWith("- type:")) {
+			if (
+				lines[i + 1].trim().startsWith("- type:") ||
+				lines[i + 1].trim().startsWith("rowHeight")
+			) {
 				sizesExist = true;
 				inView = false;
 				outputLines.push(`    columnSize:`);
 				for (const key in columns) {
 					outputLines.push(`      ${key}: ${distributedWidth}`);
 				}
+				isFinished = true;
 			}
 		}
 	}
@@ -617,7 +635,11 @@ function distributeColumnsByValue(
 
 	for (let i = 0; i < lines.length; i++) {
 		const line = lines[i];
-		if (isFinished && line.trim().startsWith("- type: table")) {
+		if (
+			isFinished &&
+			(line.trim().startsWith("- type:") ||
+				line.trim().startsWith("rowHeight"))
+		) {
 			inSizes = false;
 		}
 		if (!inSizes) {
@@ -652,16 +674,21 @@ function distributeColumnsByValue(
 				for (const key in newSizes) {
 					outputLines.push(`      ${key}: ${customWidth}`);
 				}
+				isFinished = true;
 			}
 		}
 		if (!sizesExist && inView && i + 1 < lines.length) {
-			if (lines[i + 1].trim().startsWith("- type:")) {
+			if (
+				lines[i + 1].trim().startsWith("- type:") ||
+				lines[i + 1].trim().startsWith("rowHeight:")
+			) {
 				sizesExist = true;
 				inView = false;
 				outputLines.push(`    columnSize:`);
 				for (const key in newSizes) {
 					outputLines.push(`      ${key}: ${customWidth}`);
 				}
+				isFinished = true;
 			}
 		}
 	}
@@ -706,7 +733,11 @@ function getViewColumnSizes(
 
 	for (const line of lines) {
 		const trimmedLine = line.trim();
-		if (inColumnSizeSection && line.trim().startsWith("- type:")) {
+		if (
+			inColumnSizeSection &&
+			(line.trim().startsWith("- type:") ||
+				line.trim().startsWith("rowHeight:"))
+		) {
 			break;
 		}
 		if (inStart && trimmedLine.startsWith("columnSize:")) {
@@ -718,7 +749,8 @@ function getViewColumnSizes(
 			const leadingSpaces = line.match(/^\s*/)?.[0].length ?? 0;
 			if (
 				(leadingSpaces === 0 && trimmedLine !== "") ||
-				trimmedLine.startsWith("- type:")
+				trimmedLine.startsWith("- type:") ||
+				trimmedLine.startsWith("rowHeight:")
 			) {
 				inColumnSizeSection = false;
 				continue;
