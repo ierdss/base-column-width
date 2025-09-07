@@ -319,7 +319,7 @@ export class BaseColumnWidthModal extends Modal {
 		new Setting(contentEl).addButton((button) =>
 			button
 				.setCta()
-				.setButtonText("Save Changes")
+				.setButtonText("Save changes")
 				.onClick(() => {
 					this.onSave();
 					this.close();
@@ -411,7 +411,7 @@ export class BaseCustomColumnWidthModal extends Modal {
 		new Setting(contentEl).addButton((button) =>
 			button
 				.setCta()
-				.setButtonText("Save Changes")
+				.setButtonText("Save changes")
 				.onClick(() => {
 					this.onSave();
 					this.close();
