@@ -37,25 +37,6 @@ export default class BaseColumnWidthPlugin extends Plugin {
 		this.registerEvent(
 			this.app.workspace.on("file-menu", (menu, file: TFile) => {
 				// Only add the menu item for .base files
-				menu.addItem((item) => {
-					item.setTitle("Edit column sizes")
-						.setIcon("ruler")
-						.onClick(async () => {
-							const view =
-								this.app.workspace.getActiveViewOfType(
-									FileView
-								);
-							console.log("View:", view);
-							console.log(
-								"View Title:",
-								getSelectedView(this.app.workspace)
-							);
-							console.log(
-								"Window Width:",
-								getWindowWidth(this.app.workspace)
-							);
-						});
-				});
 				if (file.extension === "base") {
 					menu.addItem((item) => {
 						item.setTitle("Edit column sizes")
