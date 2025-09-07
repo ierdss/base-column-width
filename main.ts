@@ -72,7 +72,7 @@ export default class BaseColumnWidthPlugin extends Plugin {
 							});
 					});
 					menu.addItem((item) => {
-						item.setTitle("Distribute columns in window")
+						item.setTitle("Distribute columns to window size")
 							.setIcon("ruler")
 							.onClick(async () => {
 								const fileContent = await this.app.vault.read(
@@ -113,7 +113,7 @@ export default class BaseColumnWidthPlugin extends Plugin {
 							});
 					});
 					menu.addItem((item) => {
-						item.setTitle("Distribute columns by custom value")
+						item.setTitle("Distribute columns by custom size")
 							.setIcon("ruler")
 							.onClick(async () => {
 								// Get the file content
@@ -273,7 +273,7 @@ export class BaseColumnWidthModal extends Modal {
 	onOpen() {
 		const { contentEl } = this;
 		contentEl.createEl("h2", {
-			text: `Edit Column Sizes for ${this.file.name}`,
+			text: `Edit column sizes`,
 		});
 
 		// Compare the number of columns in "order" to the number of entries in "columnSize"
@@ -371,7 +371,7 @@ export class BaseCustomColumnWidthModal extends Modal {
 	onOpen() {
 		const { contentEl } = this;
 		contentEl.createEl("h2", {
-			text: `Edit Column Sizes for ${this.file.name}`,
+			text: `Enter custom width`,
 		});
 
 		// Compare the number of columns in "order" to the number of entries in "columnSize"
