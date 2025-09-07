@@ -1,8 +1,5 @@
 import {
 	App,
-	Editor,
-	MarkdownView,
-	Menu,
 	Modal,
 	Notice,
 	Plugin,
@@ -10,9 +7,6 @@ import {
 	Setting,
 	TFile,
 } from "obsidian";
-import getSelectedView from "utility/getSelectedView";
-import getViewColumns from "utility/getViewColumns";
-import getWindowWidth from "utility/getWindowWidth";
 
 interface BaseColumnWidthSettings {
 	minColumnWidth: number;
@@ -767,4 +761,25 @@ function distributeColumnsByValue(
 
 	console.log("Output Lines:", outputLines);
 	return outputLines.join("\n");
+}
+
+// Utitlities
+export function getSelectedView(activeView: any) {
+	const activeLeaf = activeView.activeLeaf.view.controller.viewName;
+	return activeLeaf;
+}
+
+export function getViewColumns(activeView: any) {
+	const columnsArr =
+		activeView.activeLeaf.view.controller.view.data.config.order;
+	const allColumns: Record<string, number> = {};
+	columnsArr.forEach((item: string) => {
+		allColumns[item] = 0;
+	});
+	return allColumns;
+}
+
+export function getWindowWidth(activeView: any) {
+	const width = activeView.activeLeaf.width;
+	return width;
 }
