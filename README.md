@@ -2,6 +2,8 @@
 
 Customize the column sizes of your Obsidian Bases. You can only customize a base file. The columns you resized affect embedded Bases.
 
+This uses a parser that I created to manipulate the contents of the base file.
+
 > You should make sure that each table view has a unique name when using this plugin
 
 ## Functions
