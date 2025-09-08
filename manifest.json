@@ -6,6 +6,6 @@
 	"description": "Customize the column sizes of your bases.",
 	"author": "Andrei Sager (@ierdss)",
 	"authorUrl": "https://github.com/ierdss",
-	"repo": "https://github.com/ierdss/base-column-width",
+	"repo": "ierdss/base-column-width",
 	"isDesktopOnly": false
 }
