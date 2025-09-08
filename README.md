@@ -1,6 +1,6 @@
 ## Description
 
-Customize the column sizes of your Obsidian Bases. You can only customize a base file. The columns you resized affect embedded Bases.
+Customize the column sizes of your base. You can only customize a base file. The columns you resized affect embedded bases.
 
 This uses a parser that I created to manipulate the contents of the base file.
 
