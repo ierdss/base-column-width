@@ -25,3 +25,11 @@ This uses a parser that I created to manipulate the contents of the base file.
 ### Distribute evenly by custom size
 
 ![2025-09-0808-38-04-ezgif com-optimize](https://github.com/user-attachments/assets/97af8258-678c-4a8f-bf43-0cd0cd94b90f)
+
+## Upcoming
+
+-   [ ] Optimization updates for 1.4.0
+    -   [ ] Add comments for myself in the future
+    -   [ ] Optimize code by making it reusable
+    -   [ ] (Base Parser) Combine the 4 conditions for detecting the location of placement of columnSize
+        -   [ ] Add a break inside the condition for next leading spaces
