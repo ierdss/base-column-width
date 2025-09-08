@@ -16,6 +16,13 @@ This uses a parser that I created to manipulate the contents of the base file.
 
 ### Edit column Sizes
 
+![2025-09-0808-37-14-ezgif com-optimize](https://github.com/user-attachments/assets/4acf6e0d-4fe8-48eb-86b3-0c0847049390)
+
 ### Distribute evenly to window size
 
+![2025-09-0808-37-46-ezgif com-optimize](https://github.com/user-attachments/assets/a246d712-bde0-46a3-92b6-cab360879e95)
+
 ### Distribute evenly by custom size
+
+![2025-09-0808-38-04-ezgif com-optimize](https://github.com/user-attachments/assets/97af8258-678c-4a8f-bf43-0cd0cd94b90f)
+
