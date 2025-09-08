@@ -39,7 +39,7 @@ export default class BaseColumnWidthPlugin extends Plugin {
 				// Only add the menu item for .base files
 				if (file.extension === "base") {
 					menu.addItem((item) => {
-						item.setTitle("Edit column sizes")
+						item.setTitle("Edit individual sizes")
 							.setIcon("ruler")
 							.onClick(async () => {
 								// Get the file content
@@ -73,7 +73,7 @@ export default class BaseColumnWidthPlugin extends Plugin {
 							});
 					});
 					menu.addItem((item) => {
-						item.setTitle("Distribute columns to window size")
+						item.setTitle("Distribute evenly to window size")
 							.setIcon("ruler")
 							.onClick(async () => {
 								const fileContent = await this.app.vault.read(
@@ -100,7 +100,9 @@ export default class BaseColumnWidthPlugin extends Plugin {
 										file,
 										() => updatedContent
 									);
-									new Notice("Distributed columns");
+									new Notice(
+										"Distributed evenly to window size!"
+									);
 								} catch (e) {
 									console.error(
 										"Failed to parse base file content:",
@@ -114,7 +116,7 @@ export default class BaseColumnWidthPlugin extends Plugin {
 							});
 					});
 					menu.addItem((item) => {
-						item.setTitle("Distribute columns by custom size")
+						item.setTitle("Distribute evenly by custom size")
 							.setIcon("ruler")
 							.onClick(async () => {
 								// Get the file content
@@ -346,7 +348,7 @@ export class BaseColumnWidthModal extends Modal {
 		// 3. Write the complete, modified content back to the file
 		await this.app.vault.process(this.file, () => updatedContent);
 
-		new Notice("Edited columns");
+		new Notice("Edited individual sizes!");
 	}
 }
 export class BaseCustomColumnWidthModal extends Modal {
@@ -437,7 +439,7 @@ export class BaseCustomColumnWidthModal extends Modal {
 
 		await this.app.vault.process(this.file, () => updatedContent);
 
-		new Notice("Column sizes updated successfully!");
+		new Notice("Distributed evenly by custom size!");
 	}
 }
 
