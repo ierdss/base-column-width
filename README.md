@@ -8,13 +8,13 @@ This uses a parser that I created to manipulate the contents of the base file.
 
 ## Functions
 
--   **Edit individual column sizes**: Edit all the column sizes one by one of the selected base file and selected view.
+-   **Edit individual sizes**: Edit all the column sizes one by one of the selected base file and selected view.
 -   **Distribute evenly to window size**: Takes the window size and divides it to the number of present columns.
 -   **Distribute evenly by custom size**: Takes a size to assign to all the columns.
 
 ## Examples
 
-### Edit column Sizes
+### Edit individual sizes
 
 ![2025-09-0808-37-14-ezgif com-optimize](https://github.com/user-attachments/assets/4acf6e0d-4fe8-48eb-86b3-0c0847049390)
 
@@ -25,4 +25,3 @@ This uses a parser that I created to manipulate the contents of the base file.
 ### Distribute evenly by custom size
 
 ![2025-09-0808-38-04-ezgif com-optimize](https://github.com/user-attachments/assets/97af8258-678c-4a8f-bf43-0cd0cd94b90f)
-
