@@ -8,6 +8,14 @@ This uses a parser that I created to manipulate the contents of the base file.
 
 ## Functions
 
--   **Edit column sizes**: Edit all the column sizes one by one of the selected base file and selected view.
--   **Distribute column sizes to window size**: Takes the window size and divides it to the number of present columns.
--   **Distribute column sizes by custom size**: Takes a size to assign to all the columns.
+-   **Edit individual column sizes**: Edit all the column sizes one by one of the selected base file and selected view.
+-   **Distribute evenly to window size**: Takes the window size and divides it to the number of present columns.
+-   **Distribute evenly by custom size**: Takes a size to assign to all the columns.
+
+## Examples
+
+### Edit column Sizes
+
+### Distribute evenly to window size
+
+### Distribute evenly by custom size
