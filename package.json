@@ -1,7 +1,7 @@
 {
 	"name": "base-column-width",
 	"version": "1.3.0",
-	"description": "Customize the column sizes of your Obsidian Bases.",
+	"description": "Customize the column sizes of your bases.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
