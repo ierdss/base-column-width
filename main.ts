@@ -679,13 +679,14 @@ function distributeColumnsByValue(
 	return outputLines.join("\n");
 }
 
-// Utitlities
+// Gets the view name of the base file
 export function getViewName(activeView: any) {
 	const view = activeView.getActiveViewOfType(FileView);
 	const viewName = view.controller.viewName;
 	return viewName;
 }
 
+// Gets the window width of the editor
 export function getWindowWidth(activeView: any) {
 	const view = activeView.getActiveViewOfType(FileView);
 	const windowWidth = view.headerEl.clientWidth;
