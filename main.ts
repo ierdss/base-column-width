@@ -698,8 +698,8 @@ export function getViewColumns(activeView: any) {
 
 export function getWindowWidth(activeView: any) {
 	const view = activeView.getActiveViewOfType(FileView);
-	const width = view.headerEl.clientWidth;
-	return width;
+	const windowWidth = view.headerEl.clientWidth;
+	return windowWidth;
 }
 
 function getViewColumnSizes(
