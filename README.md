@@ -26,7 +26,7 @@ This uses a parser that I created to manipulate the contents of the base file.
 
 ![2025-09-0808-38-04-ezgif com-optimize](https://github.com/user-attachments/assets/97af8258-678c-4a8f-bf43-0cd0cd94b90f)
 
-## Upcoming
+## Upcoming Updates
 
 -   [ ] Optimization updates for 1.4.0
     -   [ ] Add comments for myself in the future
