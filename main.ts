@@ -50,7 +50,7 @@ export default class BaseColumnWidthPlugin extends Plugin {
 								try {
 									// Parse the file content to extract column data
 									initialData = getViewColumnSizes(
-										getSelectedView(this.app.workspace),
+										getViewName(this.app.workspace),
 										fileContent
 									);
 								} catch (e) {
@@ -83,7 +83,7 @@ export default class BaseColumnWidthPlugin extends Plugin {
 								try {
 									// Parse the file content to extract column data
 									initialData = getViewColumnSizes(
-										getSelectedView(this.app.workspace),
+										getViewName(this.app.workspace),
 										fileContent
 									);
 									const originalContent =
@@ -92,7 +92,7 @@ export default class BaseColumnWidthPlugin extends Plugin {
 										distributeColumnsToWindow(
 											originalContent,
 											initialData,
-											getSelectedView(this.app.workspace),
+											getViewName(this.app.workspace),
 											getViewColumns(this.app.workspace),
 											getWindowWidth(this.app.workspace)
 										);
@@ -127,7 +127,7 @@ export default class BaseColumnWidthPlugin extends Plugin {
 								try {
 									// Parse the file content to extract column data
 									initialData = getViewColumnSizes(
-										getSelectedView(this.app.workspace),
+										getViewName(this.app.workspace),
 										fileContent
 									);
 								} catch (e) {
@@ -342,7 +342,7 @@ export class BaseColumnWidthModal extends Modal {
 		const updatedContent = updateColumnSizesInFile(
 			originalContent,
 			this.initialData,
-			getSelectedView(this.app.workspace)
+			getViewName(this.app.workspace)
 		);
 
 		// 3. Write the complete, modified content back to the file
@@ -433,7 +433,7 @@ export class BaseCustomColumnWidthModal extends Modal {
 		const updatedContent = distributeColumnsByValue(
 			originalContent,
 			this.initialData,
-			getSelectedView(this.app.workspace),
+			getViewName(this.app.workspace),
 			this.customWidth
 		);
 
@@ -680,7 +680,7 @@ function distributeColumnsByValue(
 }
 
 // Utitlities
-export function getSelectedView(activeView: any) {
+export function getViewName(activeView: any) {
 	const view = activeView.getActiveViewOfType(FileView);
 	const viewName = view.controller.viewName;
 	return viewName;
