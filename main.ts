@@ -686,6 +686,13 @@ export function getViewName(activeView: any) {
 	return viewName;
 }
 
+export function getWindowWidth(activeView: any) {
+	const view = activeView.getActiveViewOfType(FileView);
+	const windowWidth = view.headerEl.clientWidth;
+	return windowWidth;
+}
+
+// Gets the column sizes in alphabetical from the base file with all values at 0
 export function getViewColumns(activeView: any) {
 	const view = activeView.getActiveViewOfType(FileView);
 	const columnsArr = view.controller.view.data.config.order;
@@ -696,12 +703,7 @@ export function getViewColumns(activeView: any) {
 	return allColumns;
 }
 
-export function getWindowWidth(activeView: any) {
-	const view = activeView.getActiveViewOfType(FileView);
-	const windowWidth = view.headerEl.clientWidth;
-	return windowWidth;
-}
-
+// Gets the column sizes in alphabetical from the base file with existing values
 function getViewColumnSizes(
 	start: string,
 	content: string
