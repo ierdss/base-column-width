@@ -408,7 +408,7 @@ export class BaseCustomColumnWidthModal extends Modal {
 		this.customWidth = customWidth;
 	}
 
-	onOpen() {
+	async onOpen() {
 		const { contentEl } = this;
 		contentEl.createEl("h2", {
 			text: `Enter custom width`,
@@ -447,10 +447,6 @@ export class BaseCustomColumnWidthModal extends Modal {
 			})
 		);
 
-		// Distribute columns using custom size.
-		// TODO: update columns using a single value
-		// TODO: update the content of the base file
-
 		// Add a button to save changes
 		new Setting(contentEl).addButton((button) =>
 			button
@@ -469,15 +465,33 @@ export class BaseCustomColumnWidthModal extends Modal {
 	}
 
 	async onSave() {
-		const originalContent = await this.app.vault.read(this.file);
+		// Deprecated code
+		// const originalContent = await this.app.vault.read(this.file);
 
-		const updatedContent = distributeColumnsByValue(
-			originalContent,
-			this.initialData,
-			getViewName(this.app.workspace),
+		// const updatedContent = distributeColumnsByValue(
+		// 	originalContent,
+		// 	this.initialData,
+		// 	getViewName(this.app.workspace),
+		// 	this.customWidth
+		// );
+
+		// Get the number of columns for the existing view
+		const columns = getViewColumns(this.app.workspace);
+		// Update the columns using a single value
+		const updatedColumns = updateColumnsBySingleValue(
+			columns,
 			this.customWidth
 		);
-
+		// Get the view name of the existing view
+		const viewName = getViewName(this.app.workspace);
+		// Get the original content of the base file
+		const originalContent = await this.app.vault.read(this.file);
+		// Update the content of the base file
+		const updatedContent = updateColumnSizesInBaseFile(
+			originalContent,
+			updatedColumns,
+			viewName
+		);
 		await this.app.vault.process(this.file, () => updatedContent);
 
 		new Notice("Distributed evenly by custom size!");
