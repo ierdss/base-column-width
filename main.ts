@@ -489,21 +489,6 @@ function updateColumnsBySingleValue(
 	return oldSizes;
 }
 
-// TODO: Make sure that columns exist
-// Update all column sizes individually by key and return the columns
-function updateColumnsByMultipleValues(
-	oldSizes: Record<string, number>,
-	newSizes: Record<string, number>
-): Record<string, number> {
-	console.log("Old sizes:", oldSizes);
-	console.log("New sizes:", newSizes);
-	for (const key in oldSizes) {
-		oldSizes[key] = newSizes[key];
-	}
-	console.log("Updated sizes:", oldSizes);
-	return oldSizes;
-}
-
 // Update column sizes
 function updateColumnSizesInBaseFile(
 	originalContent: string,
@@ -580,83 +565,6 @@ function updateColumnSizesInBaseFile(
 			}
 		}
 	}
-	return outputLines.join("\n");
-}
-
-// Core functions
-function updateColumnSizesInFile(
-	originalContent: string,
-	newSizes: Record<string, number>,
-	viewName: string
-): string {
-	const lines = originalContent.split("\n");
-	let outputLines: string[] = [];
-	let inTable = false;
-	let inView = false;
-	let inSizes = false;
-	let sizesExist = false;
-	let isFinished = false;
-
-	for (let i = 0; i < lines.length; i++) {
-		const line = lines[i];
-		if (
-			isFinished &&
-			(line.trim().startsWith("- type:") ||
-				line.trim().startsWith("rowHeight:"))
-		) {
-			inSizes = false;
-		}
-		if (!inSizes) {
-			outputLines.push(line);
-		}
-		if (!isFinished && line.trim().startsWith("- type: table")) {
-			inTable = true;
-			continue;
-		}
-		if (inTable) {
-			if (line.trim().startsWith(`name: ${viewName}`)) {
-				inView = true;
-			}
-			inTable = false;
-			continue;
-		}
-		if (inView && line.trim().startsWith("columnSize:")) {
-			sizesExist = true;
-			inSizes = true;
-			inView = false;
-			for (const key in newSizes) {
-				outputLines.push(`      ${key}: ${newSizes[key]}`);
-			}
-			isFinished = true;
-		}
-		if (!sizesExist && inView && i + 1 === lines.length - 1) {
-			const leadingSpaces = lines[i + 1].match(/^\s*/)?.[0].length ?? 0;
-			if (leadingSpaces === 0) {
-				sizesExist = true;
-				inView = false;
-				outputLines.push(`    columnSize:`);
-				for (const key in newSizes) {
-					outputLines.push(`      ${key}: ${newSizes[key]}`);
-				}
-				isFinished = true;
-			}
-		}
-		if (!sizesExist && inView && i + 1 < lines.length) {
-			if (
-				lines[i + 1].trim().startsWith("- type:") ||
-				lines[i + 1].trim().startsWith("rowHeight:")
-			) {
-				sizesExist = true;
-				inView = false;
-				outputLines.push(`    columnSize:`);
-				for (const key in newSizes) {
-					outputLines.push(`      ${key}: ${newSizes[key]}`);
-				}
-				isFinished = true;
-			}
-		}
-	}
-
 	return outputLines.join("\n");
 }
 
