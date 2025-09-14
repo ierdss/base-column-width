@@ -1,0 +1,11 @@
+views:
+  - type: table
+    name: Table
+    order:
+      - column_1
+      - column_2
+      - column_3
+    columnSize:
+      column_1: 100
+      column_2: 100
+      column_3: 100
