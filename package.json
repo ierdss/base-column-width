@@ -1,6 +1,6 @@
 {
 	"name": "base-column-width",
-	"version": "1.3.0",
+	"version": "1.4.0",
 	"description": "Customize the column sizes of your bases.",
 	"main": "main.js",
 	"scripts": {
