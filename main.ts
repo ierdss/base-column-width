@@ -479,7 +479,7 @@ export class BaseCustomColumnWidthModal extends Modal {
 }
 
 // Updates all column sizes using a single number and return the columns
-function updateColumnsBySingleValue(
+export function updateColumnsBySingleValue(
 	oldSizes: Record<string, number>,
 	newSize: number
 ): Record<string, number> {
