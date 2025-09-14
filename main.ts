@@ -360,20 +360,19 @@ export class BaseColumnWidthModal extends Modal {
 	}
 
 	async onSave() {
+		// Get the number of columns for the existing view
+		const columns = getViewColumns(this.app.workspace);
+		// Get the view name of the existing view
+		const viewName = getViewName(this.app.workspace);
+		// Get the original content of the base file
 		const originalContent = await this.app.vault.read(this.file);
-
-		// Edit individual columns
-		// TODO: update columns using a multiple values
-		// TODO: update the content of the base file
-
-		// 2. Use the serialization function to get the updated content
-		const updatedContent = updateColumnSizesInFile(
+		// Update the content of the base file
+		const updatedContent = updateColumnSizesInBaseFile(
 			originalContent,
 			this.initialData,
-			getViewName(this.app.workspace)
+			viewName
 		);
 
-		// 3. Write the complete, modified content back to the file
 		await this.app.vault.process(this.file, () => updatedContent);
 
 		new Notice("Edited individual sizes!");
@@ -496,11 +495,13 @@ function updateColumnsByMultipleValues(
 	oldSizes: Record<string, number>,
 	newSizes: Record<string, number>
 ): Record<string, number> {
-	let updatedSizes = {};
+	console.log("Old sizes:", oldSizes);
+	console.log("New sizes:", newSizes);
 	for (const key in oldSizes) {
 		oldSizes[key] = newSizes[key];
 	}
-	return updatedSizes;
+	console.log("Updated sizes:", oldSizes);
+	return oldSizes;
 }
 
 // Update column sizes
