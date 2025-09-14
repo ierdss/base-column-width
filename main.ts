@@ -116,7 +116,7 @@ export default class BaseColumnWidthPlugin extends Plugin {
 									const updatedContent =
 										updateColumnSizesInBaseFile(
 											originalContent,
-											initialData,
+											updatedColumns,
 											viewName
 										);
 
@@ -489,11 +489,10 @@ function updateColumnsBySingleValue(
 	oldSizes: Record<string, number>,
 	newSize: number
 ): Record<string, number> {
-	let updatedSizes = {};
 	for (const key in oldSizes) {
 		oldSizes[key] = newSize;
 	}
-	return updatedSizes;
+	return oldSizes;
 }
 
 // TODO: Make sure that columns exist
@@ -585,7 +584,6 @@ function updateColumnSizesInBaseFile(
 			}
 		}
 	}
-
 	return outputLines.join("\n");
 }
 
@@ -849,7 +847,6 @@ export function getViewColumns(activeView: any) {
 	columnsArr.forEach((item: string) => {
 		allColumns[item] = 0;
 	});
-	console.log(allColumns);
 	return allColumns;
 }
 
