@@ -81,29 +81,54 @@ export default class BaseColumnWidthPlugin extends Plugin {
 								);
 								let initialData;
 								try {
-									// Parse the file content to extract column data
-
-									// Distribute columns
-									// TODO: get number of columns
-									// TODO: get window width
-									// TODO: calculate the width = window_width / no_columns
-									// TODO: update columns using a single value
-									// TODO: update the content of the base file
-
+									// Get the number of columns for the existing view
+									const columns = getViewColumns(
+										this.app.workspace
+									);
+									// Get the width of the window for the existing view
+									const windowWidth = getWindowWidth(
+										this.app.workspace
+									);
+									// Get the distributed width by dividing the window width with the number of columns
+									const distributedWidth: number = Math.floor(
+										windowWidth /
+											Object.keys(columns).length
+									);
+									// Update the columns using a single value
+									const updatedColumns =
+										updateColumnsBySingleValue(
+											columns,
+											distributedWidth
+										);
+									// Get the view name of the existing view
+									const viewName = getViewName(
+										this.app.workspace
+									);
+									// Get the original content of the base file
+									const originalContent =
+										await this.app.vault.read(file);
+									// Extract the column data by parsing the file
 									initialData = getViewColumnSizes(
 										getViewName(this.app.workspace),
 										fileContent
 									);
-									const originalContent =
-										await this.app.vault.read(file);
+									// Update the content of the base file
 									const updatedContent =
-										distributeColumnsToWindow(
+										updateColumnSizesInBaseFile(
 											originalContent,
 											initialData,
-											getViewName(this.app.workspace),
-											getViewColumns(this.app.workspace),
-											getWindowWidth(this.app.workspace)
+											viewName
 										);
+
+									// Deprecated code
+									// const updatedContent =
+									// 	distributeColumnsToWindow(
+									// 		originalContent,
+									// 		initialData,
+									// 		getViewName(this.app.workspace),
+									// 		getViewColumns(this.app.workspace),
+									// 		getWindowWidth(this.app.workspace)
+									// 	);
 									await this.app.vault.process(
 										file,
 										() => updatedContent
