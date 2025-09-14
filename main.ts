@@ -489,24 +489,24 @@ function updateColumnsBySingleValue(
 	oldSizes: Record<string, number>,
 	newSize: number
 ): Record<string, number> {
-	let newSizes = {};
+	let updatedSizes = {};
 	for (const key in oldSizes) {
 		oldSizes[key] = newSize;
 	}
-	return newSizes;
+	return updatedSizes;
 }
 
 // TODO: Make sure that columns exist
 // Update all column sizes individually by key and return the columns
 function updateColumnsByMultipleValues(
 	oldSizes: Record<string, number>,
-	sizes: Record<string, number>
+	newSizes: Record<string, number>
 ): Record<string, number> {
-	let newSizes = {};
+	let updatedSizes = {};
 	for (const key in oldSizes) {
-		oldSizes[key] = sizes[key];
+		oldSizes[key] = newSizes[key];
 	}
-	return newSizes;
+	return updatedSizes;
 }
 
 // Update column sizes
