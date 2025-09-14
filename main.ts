@@ -82,6 +82,14 @@ export default class BaseColumnWidthPlugin extends Plugin {
 								let initialData;
 								try {
 									// Parse the file content to extract column data
+
+									// Distribute columns
+									// TODO: get number of columns
+									// TODO: get window width
+									// TODO: calculate the width = window_width / no_columns
+									// TODO: update columns using a single value
+									// TODO: update the content of the base file
+
 									initialData = getViewColumnSizes(
 										getViewName(this.app.workspace),
 										fileContent
@@ -338,6 +346,10 @@ export class BaseColumnWidthModal extends Modal {
 	async onSave() {
 		const originalContent = await this.app.vault.read(this.file);
 
+		// Edit individual columns
+		// TODO: update columns using a multiple values
+		// TODO: update the content of the base file
+
 		// 2. Use the serialization function to get the updated content
 		const updatedContent = updateColumnSizesInFile(
 			originalContent,
@@ -410,6 +422,10 @@ export class BaseCustomColumnWidthModal extends Modal {
 			})
 		);
 
+		// Distribute columns using custom size.
+		// TODO: update columns using a single value
+		// TODO: update the content of the base file
+
 		// Add a button to save changes
 		new Setting(contentEl).addButton((button) =>
 			button
@@ -441,6 +457,110 @@ export class BaseCustomColumnWidthModal extends Modal {
 
 		new Notice("Distributed evenly by custom size!");
 	}
+}
+
+// Updates all column sizes using a single number and return the columns
+function updateColumnsBySingleValue(
+	oldSizes: Record<string, number>,
+	newSize: number
+): Record<string, number> {
+	let newSizes = {};
+	for (const key in oldSizes) {
+		oldSizes[key] = newSize;
+	}
+	return newSizes;
+}
+
+// Update all column sizes individually by key and return the columns
+function updateColumnsByMultipleValues(
+	oldSizes: Record<string, number>,
+	sizes: Record<string, number>
+): Record<string, number> {
+	let newSizes = {};
+	for (const key in oldSizes) {
+		oldSizes[key] = sizes[key];
+	}
+	return newSizes;
+}
+
+// Update column sizes
+function updateColumnSizesInBaseFile(
+	originalContent: string,
+	newSizes: Record<string, number>,
+	viewName: string
+) {
+	// Split the file into an array
+	const lines = originalContent.split("\n");
+	let outputLines: string[] = [];
+
+	// Flags
+	let inTable = false;
+	let inView = false;
+	let inSizes = false;
+	let sizesExist = false;
+	let isFinished = false;
+
+	for (let i = 0; i < lines.length; i++) {
+		const line = lines[i];
+		if (
+			isFinished &&
+			(line.trim().startsWith("- type:") ||
+				line.trim().startsWith("rowHeight:"))
+		) {
+			inSizes = false;
+		}
+		if (!inSizes) {
+			outputLines.push(line);
+		}
+		if (!isFinished && line.trim().startsWith("- type: table")) {
+			inTable = true;
+			continue;
+		}
+		if (inTable) {
+			if (line.trim().startsWith(`name: ${viewName}`)) {
+				inView = true;
+			}
+			inTable = false;
+			continue;
+		}
+		if (inView && line.trim().startsWith("columnSize:")) {
+			sizesExist = true;
+			inSizes = true;
+			inView = false;
+			for (const key in newSizes) {
+				outputLines.push(`      ${key}: ${newSizes[key]}`);
+			}
+			isFinished = true;
+		}
+		if (!sizesExist && inView && i + 1 === lines.length - 1) {
+			const leadingSpaces = lines[i + 1].match(/^\s*/)?.[0].length ?? 0;
+			if (leadingSpaces === 0) {
+				sizesExist = true;
+				inView = false;
+				outputLines.push(`    columnSize:`);
+				for (const key in newSizes) {
+					outputLines.push(`      ${key}: ${newSizes[key]}`);
+				}
+				isFinished = true;
+			}
+		}
+		if (!sizesExist && inView && i + 1 < lines.length) {
+			if (
+				lines[i + 1].trim().startsWith("- type:") ||
+				lines[i + 1].trim().startsWith("rowHeight:")
+			) {
+				sizesExist = true;
+				inView = false;
+				outputLines.push(`    columnSize:`);
+				for (const key in newSizes) {
+					outputLines.push(`      ${key}: ${newSizes[key]}`);
+				}
+				isFinished = true;
+			}
+		}
+	}
+
+	return outputLines.join("\n");
 }
 
 // Core functions
@@ -529,6 +649,8 @@ function distributeColumnsToWindow(
 ): string {
 	const lines = originalContent.split("\n");
 	let outputLines: string[] = [];
+
+	// Transfer to distribute width
 	const distributedWidth: number = Math.floor(
 		windowWidth / Object.keys(columns).length
 	);
@@ -701,6 +823,7 @@ export function getViewColumns(activeView: any) {
 	columnsArr.forEach((item: string) => {
 		allColumns[item] = 0;
 	});
+	console.log(allColumns);
 	return allColumns;
 }
 
