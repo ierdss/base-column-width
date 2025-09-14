@@ -120,15 +120,6 @@ export default class BaseColumnWidthPlugin extends Plugin {
 											viewName
 										);
 
-									// Deprecated code
-									// const updatedContent =
-									// 	distributeColumnsToWindow(
-									// 		originalContent,
-									// 		initialData,
-									// 		getViewName(this.app.workspace),
-									// 		getViewColumns(this.app.workspace),
-									// 		getWindowWidth(this.app.workspace)
-									// 	);
 									await this.app.vault.process(
 										file,
 										() => updatedContent
@@ -465,16 +456,6 @@ export class BaseCustomColumnWidthModal extends Modal {
 	}
 
 	async onSave() {
-		// Deprecated code
-		// const originalContent = await this.app.vault.read(this.file);
-
-		// const updatedContent = distributeColumnsByValue(
-		// 	originalContent,
-		// 	this.initialData,
-		// 	getViewName(this.app.workspace),
-		// 	this.customWidth
-		// );
-
 		// Get the number of columns for the existing view
 		const columns = getViewColumns(this.app.workspace);
 		// Update the columns using a single value
@@ -669,167 +650,6 @@ function updateColumnSizesInFile(
 				outputLines.push(`    columnSize:`);
 				for (const key in newSizes) {
 					outputLines.push(`      ${key}: ${newSizes[key]}`);
-				}
-				isFinished = true;
-			}
-		}
-	}
-
-	return outputLines.join("\n");
-}
-
-function distributeColumnsToWindow(
-	originalContent: string,
-	newSizes: Record<string, number>,
-	viewName: string,
-	columns: Record<string, number>,
-	windowWidth: number
-): string {
-	const lines = originalContent.split("\n");
-	let outputLines: string[] = [];
-
-	// Transfer to distribute width
-	const distributedWidth: number = Math.floor(
-		windowWidth / Object.keys(columns).length
-	);
-
-	let inTable = false;
-	let inView = false;
-	let inSizes = false;
-	let sizesExist = false;
-	let isFinished = false;
-
-	for (let i = 0; i < lines.length; i++) {
-		const line = lines[i];
-		if (
-			isFinished &&
-			(line.trim().startsWith("- type:") ||
-				line.trim().startsWith("rowHeight:"))
-		) {
-			inSizes = false;
-		}
-		if (!inSizes) {
-			outputLines.push(line);
-		}
-		if (!isFinished && line.trim().startsWith("- type: table")) {
-			inTable = true;
-			continue;
-		}
-		if (inTable) {
-			if (line.trim().startsWith(`name: ${viewName}`)) {
-				inView = true;
-			}
-			inTable = false;
-			continue;
-		}
-		if (inView && line.trim().startsWith("columnSize:")) {
-			sizesExist = true;
-			inSizes = true;
-			inView = false;
-			for (const key in columns) {
-				outputLines.push(`      ${key}: ${distributedWidth}`);
-			}
-			isFinished = true;
-		}
-		if (!sizesExist && inView && i + 1 === lines.length - 1) {
-			const leadingSpaces = lines[i + 1].match(/^\s*/)?.[0].length ?? 0;
-			if (leadingSpaces === 0) {
-				sizesExist = true;
-				inView = false;
-				outputLines.push(`    columnSize:`);
-				for (const key in columns) {
-					outputLines.push(`      ${key}: ${distributedWidth}`);
-				}
-				isFinished = true;
-			}
-		}
-		if (!sizesExist && inView && i + 1 < lines.length) {
-			if (
-				lines[i + 1].trim().startsWith("- type:") ||
-				lines[i + 1].trim().startsWith("rowHeight")
-			) {
-				sizesExist = true;
-				inView = false;
-				outputLines.push(`    columnSize:`);
-				for (const key in columns) {
-					outputLines.push(`      ${key}: ${distributedWidth}`);
-				}
-				isFinished = true;
-			}
-		}
-	}
-
-	return outputLines.join("\n");
-}
-
-function distributeColumnsByValue(
-	originalContent: string,
-	newSizes: Record<string, number>,
-	viewName: string,
-	customWidth: number
-): string {
-	const lines = originalContent.split("\n");
-	let outputLines: string[] = [];
-	let inTable = false;
-	let inView = false;
-	let inSizes = false;
-	let sizesExist = false;
-	let isFinished = false;
-
-	for (let i = 0; i < lines.length; i++) {
-		const line = lines[i];
-		if (
-			isFinished &&
-			(line.trim().startsWith("- type:") ||
-				line.trim().startsWith("rowHeight"))
-		) {
-			inSizes = false;
-		}
-		if (!inSizes) {
-			outputLines.push(line);
-		}
-		if (!isFinished && line.trim().startsWith("- type: table")) {
-			inTable = true;
-			continue;
-		}
-		if (inTable) {
-			if (line.trim().startsWith(`name: ${viewName}`)) {
-				inView = true;
-			}
-			inTable = false;
-			continue;
-		}
-		if (inView && line.trim().startsWith("columnSize:")) {
-			sizesExist = true;
-			inSizes = true;
-			inView = false;
-			for (const key in newSizes) {
-				outputLines.push(`      ${key}: ${customWidth}`);
-			}
-			isFinished = true;
-		}
-		if (!sizesExist && inView && i + 1 === lines.length - 1) {
-			const leadingSpaces = lines[i + 1].match(/^\s*/)?.[0].length ?? 0;
-			if (leadingSpaces === 0) {
-				sizesExist = true;
-				inView = false;
-				outputLines.push(`    columnSize:`);
-				for (const key in newSizes) {
-					outputLines.push(`      ${key}: ${customWidth}`);
-				}
-				isFinished = true;
-			}
-		}
-		if (!sizesExist && inView && i + 1 < lines.length) {
-			if (
-				lines[i + 1].trim().startsWith("- type:") ||
-				lines[i + 1].trim().startsWith("rowHeight:")
-			) {
-				sizesExist = true;
-				inView = false;
-				outputLines.push(`    columnSize:`);
-				for (const key in newSizes) {
-					outputLines.push(`      ${key}: ${customWidth}`);
 				}
 				isFinished = true;
 			}
