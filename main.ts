@@ -471,6 +471,7 @@ function updateColumnsBySingleValue(
 	return newSizes;
 }
 
+// TODO: Make sure that columns exist
 // Update all column sizes individually by key and return the columns
 function updateColumnsByMultipleValues(
 	oldSizes: Record<string, number>,
