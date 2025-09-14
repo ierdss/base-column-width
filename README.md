@@ -29,7 +29,7 @@ This uses a parser that I created to manipulate the contents of the base file.
 ## Upcoming Updates
 
 -   [ ] Optimization updates for 1.4.0
-    -   [ ] Add comments for myself in the future
-    -   [ ] Optimize code by making it reusable
+    -   [x] Add comments for myself in the future
+    -   [x] Optimize code by making it reusable
     -   [ ] (Base Parser) Combine the 4 conditions for detecting the location of placement of columnSize
         -   [ ] Add a break inside the condition for next leading spaces
