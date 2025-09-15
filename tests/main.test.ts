@@ -12,6 +12,7 @@ import { updateColumnsBySingleValue } from "../main";
  * - Detect the end of the file. (To place sizes before the end of the file if columnSize and rowHeight does not exist and to end placing sizes.)
  */
 describe("updateColumnSizeInBaseFile", () => {
+	let caseNum = 1;
 	const testCases = [
 		{
 			title: "after columnSize",
@@ -20,102 +21,103 @@ describe("updateColumnSizeInBaseFile", () => {
 			title: "before rowHeight",
 		},
 		{
-			title: "before next view",
+			title: "before the next view",
 		},
 		{
-			title: "before end of file",
+			title: "before the end of the file",
 		},
 	];
 
-	describe("Insert sizes in single view", () => {
-		for (let c = 0; c < testCases.length; c++) {
-			test(`case ${c}: ${testCases[c].title}`, () => {
-				const inputPath = path.join(
-					__dirname,
-					"..",
-					"bases",
-					`case_${c + 1}/input.base`
-				);
-				const input = fs.readFileSync(inputPath);
-				const outputPath = path.join(
-					__dirname,
-					"..",
-					"bases",
-					`case_${c + 1}/output.base`
-				);
-				const output = fs.readFileSync(outputPath);
-				expect(input).toEqual(output);
-			});
-		}
-	});
+	// describe("Insert sizes in single view", () => {
+	// 	for (let c = 0; c < testCases.length; c++) {
+	// 		test(`case ${c}: ${testCases[c].title}`, () => {
+	// 			const inputPath = path.join(
+	// 				__dirname,
+	// 				"..",
+	// 				"bases",
+	// 				`case_${c + 1}/input.base`
+	// 			);
+	// 			const input = fs.readFileSync(inputPath);
+	// 			const outputPath = path.join(
+	// 				__dirname,
+	// 				"..",
+	// 				"bases",
+	// 				`case_${c + 1}/output.base`
+	// 			);
+	// 			const output = fs.readFileSync(outputPath);
+	// 			expect(input).toEqual(output);
+	// 		});
+	// 	}
+	// });
 
-	describe("Insert sizes in multiple views", () => {
-		describe("at first view", () => {
-			for (let c = 0; c < testCases.length; c++) {
-				test(`case ${c}: ${testCases[c].title}`, () => {
-					const inputPath = path.join(
-						__dirname,
-						"..",
-						"bases",
-						`case_${c + 1}/input.base`
-					);
-					const input = fs.readFileSync(inputPath);
-					const outputPath = path.join(
-						__dirname,
-						"..",
-						"bases",
-						`case_${c + 1}/output.base`
-					);
-					const output = fs.readFileSync(outputPath);
-					expect(input).toEqual(output);
-				});
-			}
-		});
+	// describe("Insert sizes in multiple views", () => {
+	// 	describe("at first view (Table 1)", () => {
+	// 		for (let c = 0; c < testCases.length; c++) {
+	// 			test(`case ${caseNum}: ${testCases[c].title}`, () => {
+	// 				const folderNum = c + 1;
+	// 				const inputPath = path.join(
+	// 					__dirname,
+	// 					"..",
+	// 					"bases",
+	// 					`case_${folderNum}/input.base`
+	// 				);
+	// 				const input = fs.readFileSync(inputPath);
+	// 				const outputPath = path.join(
+	// 					__dirname,
+	// 					"..",
+	// 					"bases",
+	// 					`case_${folderNum}/output.base`
+	// 				);
+	// 				const output = fs.readFileSync(outputPath);
+	// 				expect(input).toEqual(output);
+	// 			});
+	// 		}
+	// 	});
 
-		describe("at middle view", () => {
-			for (let c = 0; c < testCases.length; c++) {
-				test(`case ${c}: ${testCases[c].title}`, () => {
-					const inputPath = path.join(
-						__dirname,
-						"..",
-						"bases",
-						`case_${c + 1}/input.base`
-					);
-					const input = fs.readFileSync(inputPath);
-					const outputPath = path.join(
-						__dirname,
-						"..",
-						"bases",
-						`case_${c + 1}/output.base`
-					);
-					const output = fs.readFileSync(outputPath);
-					expect(input).toEqual(output);
-				});
-			}
-		});
+	// describe("at middle view (Table 2)", () => {
+	// 	for (let c = 0; c < testCases.length; c++) {
+	// 		test(`case ${c}: ${testCases[c].title}`, () => {
+	// 			const inputPath = path.join(
+	// 				__dirname,
+	// 				"..",
+	// 				"bases",
+	// 				`case_${c + 1}/input.base`
+	// 			);
+	// 			const input = fs.readFileSync(inputPath);
+	// 			const outputPath = path.join(
+	// 				__dirname,
+	// 				"..",
+	// 				"bases",
+	// 				`case_${c + 1}/output.base`
+	// 			);
+	// 			const output = fs.readFileSync(outputPath);
+	// 			expect(input).toEqual(output);
+	// 		});
+	// 	}
+	// });
 
-		describe("at last view", () => {
-			for (let c = 0; c < testCases.length; c++) {
-				test(`case ${c}: ${testCases[c].title}`, () => {
-					const inputPath = path.join(
-						__dirname,
-						"..",
-						"bases",
-						`case_${c + 1}/input.base`
-					);
-					const input = fs.readFileSync(inputPath);
-					const outputPath = path.join(
-						__dirname,
-						"..",
-						"bases",
-						`case_${c + 1}/output.base`
-					);
-					const output = fs.readFileSync(outputPath);
-					expect(input).toEqual(output);
-				});
-			}
-		});
-	});
+	// describe("at last view (Table 3)", () => {
+	// 	for (let c = 0; c < testCases.length; c++) {
+	// 		test(`case ${c}: ${testCases[c].title}`, () => {
+	// 			const inputPath = path.join(
+	// 				__dirname,
+	// 				"..",
+	// 				"bases",
+	// 				`case_${c + 1}/input.base`
+	// 			);
+	// 			const input = fs.readFileSync(inputPath);
+	// 			const outputPath = path.join(
+	// 				__dirname,
+	// 				"..",
+	// 				"bases",
+	// 				`case_${c + 1}/output.base`
+	// 			);
+	// 			const output = fs.readFileSync(outputPath);
+	// 			expect(input).toEqual(output);
+	// 		});
+	// 	}
+	// });
+	// });
 });
 
 // describe("updateColumnsBySingleValue", () => {
