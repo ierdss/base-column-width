@@ -15,7 +15,7 @@ import updateColumnsBySingleValue from "../src/functions/updateColumnsBySingleVa
  */
 let caseNum = 1;
 describe("updateColumnSizeInBaseFile", () => {
-	const testCases = [
+	const casesAtFirst = [
 		{
 			title: "after columnSize",
 		},
@@ -26,7 +26,18 @@ describe("updateColumnSizeInBaseFile", () => {
 			title: "before the next view",
 		},
 	];
-	const testCasesLast = [
+	const casesAtMiddle = [
+		{
+			title: "after columnSize",
+		},
+		{
+			title: "before rowHeight",
+		},
+		{
+			title: "before the next view",
+		},
+	];
+	const casesAtLast = [
 		{
 			title: "after columnSize",
 		},
@@ -37,30 +48,33 @@ describe("updateColumnSizeInBaseFile", () => {
 			title: "before the end of the file",
 		},
 	];
-	describe("Insert sizes in single view", () => {
-		for (let c = 0; c < testCases.length; c++) {
-			test(`case ${caseNum++}: ${testCases[c].title}`, () => {
-				const inputPath = path.join(
-					__dirname,
-					"..",
-					"tests/files/at_first",
-					`case_${c + 1}/input.base`
-				);
-				const input = updateColumnSizesInBaseFile(
-					fs.readFileSync(inputPath, "utf-8"),
-					{ column_1: 300, column_2: 300, column_3: 300 },
-					"Table 1"
-				);
-				const outputPath = path.join(
-					__dirname,
-					"..",
-					"tests/files/at_first",
-					`case_${c + 1}/output.base`
-				);
-				const output = fs.readFileSync(outputPath, "utf-8");
-				expect(yaml.load(input)).toStrictEqual(yaml.load(output));
-			});
-		}
+
+	describe("Insert sizes in multiple views", () => {
+		describe("at first view (Table 1)", () => {
+			for (let c = 0; c < casesAtFirst.length; c++) {
+				test(`case ${caseNum++}: ${casesAtFirst[c].title}`, () => {
+					const inputPath = path.join(
+						__dirname,
+						"..",
+						"tests/files/at_first",
+						`case_${c + 1}/input.base`
+					);
+					const input = updateColumnSizesInBaseFile(
+						fs.readFileSync(inputPath, "utf-8"),
+						{ column_1: 300, column_2: 300, column_3: 300 },
+						"Table 1"
+					);
+					const outputPath = path.join(
+						__dirname,
+						"..",
+						"tests/files/at_first",
+						`case_${c + 1}/output.base`
+					);
+					const output = fs.readFileSync(outputPath, "utf-8");
+					expect(yaml.load(input)).toStrictEqual(yaml.load(output));
+				});
+			}
+		});
 	});
 
 	// describe("Insert sizes in multiple views", () => {
