@@ -19,17 +19,24 @@ describe("updateColumnSizeInBaseFile", () => {
 		{
 			title: "after columnSize",
 		},
-		// {
-		// 	title: "before rowHeight",
-		// },
-		// {
-		// 	title: "before the next view",
-		// },
-		// {
-		// 	title: "before the end of the file",
-		// },
+		{
+			title: "before rowHeight",
+		},
+		{
+			title: "before the next view",
+		},
 	];
-
+	const testCasesLast = [
+		{
+			title: "after columnSize",
+		},
+		{
+			title: "before rowHeight",
+		},
+		{
+			title: "before the end of the file",
+		},
+	];
 	describe("Insert sizes in single view", () => {
 		for (let c = 0; c < testCases.length; c++) {
 			test(`case ${c}: ${testCases[c].title}`, () => {
