@@ -13,8 +13,8 @@ import updateColumnsBySingleValue from "../src/functions/updateColumnsBySingleVa
  * - Detect the next view. (To place sizes before the next view if columnSize and rowHeight does not exist and to end placing sizes.)
  * - Detect the end of the file. (To place sizes before the end of the file if columnSize and rowHeight does not exist and to end placing sizes.)
  */
+let caseNum = 1;
 describe("updateColumnSizeInBaseFile", () => {
-	let caseNum = 1;
 	const testCases = [
 		{
 			title: "after columnSize",
@@ -134,7 +134,7 @@ describe("updateColumnSizeInBaseFile", () => {
 });
 
 describe("updateColumnsBySingleValue", () => {
-	test("case: 1: Update all column sizes using a single value", () => {
+	test(`case ${caseNum}: Update all column sizes using a single value`, () => {
 		const input = updateColumnsBySingleValue(
 			{ column_1: 0, column_2: 50, column_3: 100 },
 			200
