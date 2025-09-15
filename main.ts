@@ -490,11 +490,11 @@ export function updateColumnsBySingleValue(
 }
 
 // Update column sizes
-function updateColumnSizesInBaseFile(
+export function updateColumnSizesInBaseFile(
 	originalContent: string,
 	newSizes: Record<string, number>,
 	viewName: string
-) {
+): string {
 	// Split the file into an array
 	const lines = originalContent.split("\n");
 	let outputLines: string[] = [];
