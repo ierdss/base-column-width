@@ -28,6 +28,10 @@ describe("updateColumnSizeInBaseFile", () => {
 		},
 	];
 
+	test("case 0: Placholder", () => {
+		expect("true").toEqual("true");
+	});
+
 	// describe("Insert sizes in single view", () => {
 	// 	for (let c = 0; c < testCases.length; c++) {
 	// 		test(`case ${c}: ${testCases[c].title}`, () => {
