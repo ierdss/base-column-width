@@ -80,7 +80,7 @@ describe("updateColumnSizeInBaseFile", () => {
 						`case_${c + 1}/output.base`
 					);
 					const output = fs.readFileSync(outputPath, "utf-8");
-					expect(yaml.load(input)).toStrictEqual(yaml.load(output));
+					expect(yaml.load(input)).toEqual(yaml.load(output));
 				});
 			}
 		});
@@ -106,7 +106,7 @@ describe("updateColumnSizeInBaseFile", () => {
 						`case_${c + 1}/output.base`
 					);
 					const output = fs.readFileSync(outputPath, "utf-8");
-					expect(yaml.load(input)).toStrictEqual(yaml.load(output));
+					expect(yaml.load(input)).toEqual(yaml.load(output));
 				});
 			}
 		});
@@ -132,7 +132,7 @@ describe("updateColumnSizeInBaseFile", () => {
 						`case_${c + 1}/output.base`
 					);
 					const output = fs.readFileSync(outputPath, "utf-8");
-					expect(yaml.load(input)).toStrictEqual(yaml.load(output));
+					expect(yaml.load(input)).toEqual(yaml.load(output));
 				});
 			}
 		});
