@@ -1,0 +1,22 @@
+views:
+  - type: table
+    name: Table 1
+    order:
+      - column_1
+      - column_2
+      - column_3      
+    rowHeight: extra
+  - type: table
+    name: Table 2
+    order:
+      - column_1
+      - column_2
+      - column_3
+    rowHeight: extra
+  - type: table
+    name: Table 3
+    order:
+      - column_1
+      - column_2
+      - column_3
+    rowHeight: extra
