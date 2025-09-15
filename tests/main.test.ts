@@ -2,25 +2,28 @@ import * as fs from "fs";
 import * as path from "path";
 import { updateColumnsBySingleValue } from "../main";
 
+/**
+ * This function should perform the following actions:
+ * - Detect if the type is table. (To prevent placing sizes in the wrong table type)
+ * - If table then detect the name. (To prevent placing sizes in the wrong view.)
+ * - Detect the columnSize. (To find here to place sizes if it exists.)
+ * - Detect the rowHeight. (To place sizes before rowHeight if columnSize doesn't exist)
+ * - Detect the next view. (To place sizes before the next view if columnSize and rowHeight does not exist and to end placing sizes.)
+ * - Detect the end of the file. (To place sizes before the end of the file if columnSize and rowHeight does not exist and to end placing sizes.)
+ */
 describe("updateColumnSizeInBaseFile", () => {
 	const testCases = [
 		{
-			title: "with columnSize",
+			title: "after columnSize",
 		},
 		{
-			title: "without columnSize",
+			title: "before rowHeight",
 		},
 		{
-			title: "with rowHeight",
+			title: "before next view",
 		},
 		{
-			title: "without rowHeight",
-		},
-		{
-			title: "with columnSize and rowHeight",
-		},
-		{
-			title: "without columnSize and rowHeight",
+			title: "before end of file",
 		},
 	];
 
