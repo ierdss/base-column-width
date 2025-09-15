@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
+import updateColumnSizesInBaseFile from "../src/functions/updateColumnSizeInBaseFile";
 import updateColumnsBySingleValue from "../src/functions/updateColumnsBySingleValue";
 
 /**
@@ -32,27 +33,31 @@ describe("updateColumnSizeInBaseFile", () => {
 		expect("true").toEqual("true");
 	});
 
-	// describe("Insert sizes in single view", () => {
-	// 	for (let c = 0; c < testCases.length; c++) {
-	// 		test(`case ${c}: ${testCases[c].title}`, () => {
-	// 			const inputPath = path.join(
-	// 				__dirname,
-	// 				"..",
-	// 				"bases",
-	// 				`case_${c + 1}/input.base`
-	// 			);
-	// 			const input = fs.readFileSync(inputPath);
-	// 			const outputPath = path.join(
-	// 				__dirname,
-	// 				"..",
-	// 				"bases",
-	// 				`case_${c + 1}/output.base`
-	// 			);
-	// 			const output = fs.readFileSync(outputPath);
-	// 			expect(input).toEqual(output);
-	// 		});
-	// 	}
-	// });
+	describe("Insert sizes in single view", () => {
+		for (let c = 0; c < testCases.length; c++) {
+			test(`case ${c}: ${testCases[c].title}`, () => {
+				const inputPath = path.join(
+					__dirname,
+					"..",
+					"tests/files/at_first",
+					`case_${c + 1}/input.base`
+				);
+				const input = updateColumnSizesInBaseFile(
+					fs.readFileSync(inputPath, "utf-8"),
+					{ column_1: 300, column_2: 300, column_3: 300 },
+					"Table 1"
+				);
+				const outputPath = path.join(
+					__dirname,
+					"..",
+					"tests/files/at_first",
+					`case_${c + 1}/output.base`
+				);
+				const output = fs.readFileSync(outputPath, "utf-8");
+				expect(input).toEqual(output);
+			});
+		}
+	});
 
 	// describe("Insert sizes in multiple views", () => {
 	// 	describe("at first view (Table 1)", () => {
