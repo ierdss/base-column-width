@@ -4,7 +4,7 @@ views:
     order:
       - column_1
       - column_2
-      - column_3      
+      - column_3
     columnSize:
       note.column_1: 300
       note.column_2: 300
