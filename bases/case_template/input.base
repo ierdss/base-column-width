@@ -1,0 +1,34 @@
+views:
+  - type: table
+    name: Table 1
+    order:
+      - column_1
+      - column_2
+      - column_3      
+    columnSize:
+      note.column_1: 100
+      note.column_2: 100
+      note.column_3: 100
+    rowHeight: extra
+  - type: table
+    name: Table 2
+    order:
+      - column_1
+      - column_2
+      - column_3
+    columnSize:
+      note.column_1: 100
+      note.column_2: 100
+      note.column_3: 100
+    rowHeight: extra
+  - type: table
+    name: Table 3
+    order:
+      - column_1
+      - column_2
+      - column_3
+    columnSize:
+      note.column_1: 100
+      note.column_2: 100
+      note.column_3: 100
+    rowHeight: extra
