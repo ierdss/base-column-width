@@ -39,7 +39,7 @@ describe("updateColumnSizeInBaseFile", () => {
 	];
 	describe("Insert sizes in single view", () => {
 		for (let c = 0; c < testCases.length; c++) {
-			test(`case ${c}: ${testCases[c].title}`, () => {
+			test(`case ${caseNum++}: ${testCases[c].title}`, () => {
 				const inputPath = path.join(
 					__dirname,
 					"..",
