@@ -43,7 +43,11 @@ export default function updateColumnSizesInBaseFile(
 			inSizes = true;
 			inView = false;
 			for (const key in newSizes) {
-				outputLines.push(`      ${key}: ${newSizes[key]}`);
+				if (key.trim().startsWith("file.")) {
+					outputLines.push(`      ${key}: ${newSizes[key]}`);
+				} else {
+					outputLines.push(`      note.${key}: ${newSizes[key]}`);
+				}
 			}
 			isFinished = true;
 		}
@@ -54,7 +58,11 @@ export default function updateColumnSizesInBaseFile(
 				inView = false;
 				outputLines.push(`    columnSize:`);
 				for (const key in newSizes) {
-					outputLines.push(`      ${key}: ${newSizes[key]}`);
+					if (key.trim().startsWith("file.")) {
+						outputLines.push(`      ${key}: ${newSizes[key]}`);
+					} else {
+						outputLines.push(`      note.${key}: ${newSizes[key]}`);
+					}
 				}
 				isFinished = true;
 			}
@@ -68,7 +76,11 @@ export default function updateColumnSizesInBaseFile(
 				inView = false;
 				outputLines.push(`    columnSize:`);
 				for (const key in newSizes) {
-					outputLines.push(`      ${key}: ${newSizes[key]}`);
+					if (key.trim().startsWith("file.")) {
+						outputLines.push(`      ${key}: ${newSizes[key]}`);
+					} else {
+						outputLines.push(`      note.${key}: ${newSizes[key]}`);
+					}
 				}
 				isFinished = true;
 			}
