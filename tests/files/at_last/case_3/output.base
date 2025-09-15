@@ -17,9 +17,9 @@ views:
       - column_2
       - column_3
     columnSize:
-      note.column_1: 300
-      note.column_2: 300
-      note.column_3: 300
+      note.column_1: 100
+      note.column_2: 100
+      note.column_3: 100
     rowHeight: extra
   - type: table
     name: Table 3
@@ -28,7 +28,7 @@ views:
       - column_2
       - column_3
     columnSize:
-      note.column_1: 100
-      note.column_2: 100
-      note.column_3: 100
+      note.column_1: 300
+      note.column_2: 300
+      note.column_3: 300
     rowHeight: extra
