@@ -23,6 +23,9 @@ describe("updateColumnSizeInBaseFile", () => {
 			title: "before rowHeight",
 		},
 		{
+			title: "with columnSize and rowHeight",
+		},
+		{
 			title: "before the next view",
 		},
 	];
@@ -34,6 +37,9 @@ describe("updateColumnSizeInBaseFile", () => {
 			title: "before rowHeight",
 		},
 		{
+			title: "with columnSize and rowHeight",
+		},
+		{
 			title: "before the next view",
 		},
 	];
@@ -43,6 +49,9 @@ describe("updateColumnSizeInBaseFile", () => {
 		},
 		{
 			title: "before rowHeight",
+		},
+		{
+			title: "with columnSize and rowHeight",
 		},
 		{
 			title: "before the end of the file",
@@ -114,7 +123,7 @@ describe("updateColumnSizeInBaseFile", () => {
 					const input = updateColumnSizesInBaseFile(
 						fs.readFileSync(inputPath, "utf-8"),
 						{ column_1: 300, column_2: 300, column_3: 300 },
-						"Table 1"
+						"Table 3"
 					);
 					const outputPath = path.join(
 						__dirname,
