@@ -1,0 +1,23 @@
+views:
+  - type: table
+    name: Table 1
+    order:
+      - column_1
+      - column_2
+      - column_3      
+    columnSize:
+      note.column_1: 300
+      note.column_2: 300
+      note.column_3: 300
+  - type: table
+    name: Table 2
+    order:
+      - column_1
+      - column_2
+      - column_3
+  - type: table
+    name: Table 3
+    order:
+      - column_1
+      - column_2
+      - column_3

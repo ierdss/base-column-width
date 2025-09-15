@@ -1,7 +1,0 @@
-views:
-  - type: table
-    name: Table
-    order:
-      - column_1
-      - column_2
-      - column_3
