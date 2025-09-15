@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
-import updateColumnsBySingleValue from "../main";
+import updateColumnsBySingleValue from "../src/functions/updateColumnsBySingleValue";
 
 /**
  * This function should perform the following actions:
@@ -124,13 +124,13 @@ describe("updateColumnSizeInBaseFile", () => {
 	// });
 });
 
-// describe("updateColumnsBySingleValue", () => {
-// 	test("case: 1: Update all column sizes using a single value", () => {
-// 		const input = new updateColumnsBySingleValue(
-// 			{ column_1: 0, column_2: 50, column_3: 100 },
-// 			200
-// 		);
-// 		const output = { column_1: 200, column_2: 200, column_3: 200 };
-// 		expect(input).toEqual(output);
-// 	});
-// });
+describe("updateColumnsBySingleValue", () => {
+	test("case: 1: Update all column sizes using a single value", () => {
+		const input = updateColumnsBySingleValue(
+			{ column_1: 0, column_2: 50, column_3: 100 },
+			200
+		);
+		const output = { column_1: 200, column_2: 200, column_3: 200 };
+		expect(input).toEqual(output);
+	});
+});

@@ -8,6 +8,7 @@ import {
 	Setting,
 	TFile,
 } from "obsidian";
+import updateColumnsBySingleValue from "src/functions/updateColumnsBySingleValue";
 
 interface BaseColumnWidthSettings {
 	minColumnWidth: number;
@@ -476,17 +477,6 @@ export class BaseCustomColumnWidthModal extends Modal {
 
 		new Notice("Distributed evenly by custom size!");
 	}
-}
-
-// Updates all column sizes using a single number and return the columns
-export function updateColumnsBySingleValue(
-	oldSizes: Record<string, number>,
-	newSize: number
-): Record<string, number> {
-	for (const key in oldSizes) {
-		oldSizes[key] = newSize;
-	}
-	return oldSizes;
 }
 
 // Update column sizes
