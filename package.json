@@ -22,10 +22,8 @@
 		"esbuild": "0.17.3",
 		"jest": "^30.1.3",
 		"obsidian": "latest",
+		"ts-jest": "^29.4.1",
 		"tslib": "2.4.0",
 		"typescript": "4.7.4"
-	},
-	"dependencies": {
-		"ts-jest": "^29.4.1"
 	}
 }
