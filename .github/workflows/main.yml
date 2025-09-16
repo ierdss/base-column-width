@@ -3,10 +3,10 @@ name: Jest Tests
 on:
     push:
         branches:
-            - main # Or your default branch
+            - master # Or your default branch
     pull_request:
         branches:
-            - main # Or your default branch
+            - master # Or your default branch
 
 jobs:
     run-jest-tests:
