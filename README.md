@@ -2,7 +2,7 @@
 
 Customize the column sizes of your base. The columns you resized affect embedded bases.
 
-> WARNING: You should make sure that each table view has a unique name when using this plugin.
+> WARNING: You should make sure that each table view that is type table has a unique name when using this plugin.
 
 ## Functions
 
